@@ -10,7 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-public class StaticGenerator {
+public class StaticFileGenerator {
     public static void main(String[] args) {
         // 获取当前模块目录 F:\yefeng-generator 路径
         String projectPath = System.getProperty("user.dir");
