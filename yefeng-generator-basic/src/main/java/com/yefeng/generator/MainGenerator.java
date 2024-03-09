@@ -6,6 +6,7 @@ import freemarker.template.TemplateException;
 import java.io.File;
 import java.io.IOException;
 
+
 public class MainGenerator {
     public static void main(String[] args) throws Exception {
         MainTemplateConfig mainTemplateConfig = new MainTemplateConfig();
@@ -15,24 +16,31 @@ public class MainGenerator {
         doGenerate(mainTemplateConfig);
     }
 
+    /**
+     * 生成静态代码和动态代码
+     * @param model 生成代码参数
+     * @throws Exception 异常
+     */
     public static void doGenerate(Object model) throws Exception {
         // 生态静态文件路径
         String projectPath = System.getProperty("user.dir");
-        String parentFile = new File(projectPath).getAbsolutePath();
-        // 输入路径 ACM的示例模板 在 dexcode-generator-demo-projects 目录下
+        // 找到整个项目的根目录 yefeng-generator
+        File parentFile = new File(projectPath).getParentFile();
+        // 输入路径 ACM 的示例模板在 yefeng-generator-projects 目录下
         String inputPath = new File(parentFile + File.separator + "yefeng-generator-projects/acm-template").getAbsolutePath();
-        System.out.println(inputPath);
+        System.out.println("static inputPath = " +  inputPath);
         // 输出路径
         String outputPath = projectPath;
-        System.out.println(outputPath);
+        System.out.println("static outputPath = " + outputPath);
+        // 生成静态文件
         StaticGenerator.copyFilesByHutool(inputPath, outputPath);
 
-
         // 生成动态文件，会覆盖部分已生成的静态文件
-        String projectPaths = System.getProperty("user.dir") + File.separator + "yefeng-generator-basic";
-        String inputDynamicFilePath = projectPaths + File.separator + "src/main/resources/templates/MainTemplate.java.ftl";
-        String outputDynamicFilePath = projectPaths + File.separator + "MainTemplate2.java";
+        String inputDynamicFilePath = projectPath + File.separator + "src/main/resources/templates/MainTemplate.java.ftl";
+        String outputDynamicFilePath = projectPath + File.separator + "MainTemplate2.java";
         try {
+            System.out.println("inputDynamicFilePath =" + inputDynamicFilePath);
+            System.out.println("outputDynamicFilePath = " + outputDynamicFilePath);
             DynamicGenerator.doGenerate(inputDynamicFilePath, outputDynamicFilePath, model);
         } catch (Exception e) {
             throw new Exception(e);
