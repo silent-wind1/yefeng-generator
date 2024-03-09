@@ -2,7 +2,7 @@ package com.yefeng.cli.command;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.yefeng.generator.MainGenerator;
-import com.yefeng.model.MainTemplateConfig;
+import com.yefeng.model.DataModel;
 import lombok.Data;
 import picocli.CommandLine;
 
@@ -29,7 +29,7 @@ public class GenerateCommand implements Callable<Integer> {
 
     @Override
     public Integer call() throws Exception {
-        MainTemplateConfig mainTemplateConfig = new MainTemplateConfig();
+        DataModel mainTemplateConfig = new DataModel();
         BeanUtil.copyProperties(this, mainTemplateConfig);
         System.out.println("配置信息" + mainTemplateConfig);
         MainGenerator.doGenerate(mainTemplateConfig);

@@ -1,13 +1,13 @@
-package com.yefeng.generator;
+package com.yefeng.maker.generator.file;
 
-import com.yefeng.model.MainTemplateConfig;
+import com.yefeng.maker.model.DataModel;
 
 import java.io.File;
 
 
-public class MainGenerator {
+public class FileGenerator {
     public static void main(String[] args) throws Exception {
-        MainTemplateConfig mainTemplateConfig = new MainTemplateConfig();
+        DataModel mainTemplateConfig = new DataModel();
         mainTemplateConfig.setAuthor("dexter");
         mainTemplateConfig.setLoop(false);
         mainTemplateConfig.setOutputText("最终の求和结果：");
@@ -32,7 +32,7 @@ public class MainGenerator {
         String outputPath = projectPath;
         System.out.println("static outputPath = " + outputPath);
         // 生成静态文件
-        StaticGenerator.copyFilesByHutool(inputPath, outputPath);
+        StaticFileGenerator.copyFilesByHutool(inputPath, outputPath);
 
         // 生成动态文件，会覆盖部分已生成的静态文件
         String inputDynamicFilePath = projectPath + File.separator + "src/main/resources/templates/MainTemplate.java.ftl";
@@ -40,7 +40,7 @@ public class MainGenerator {
         try {
             System.out.println("inputDynamicFilePath =" + inputDynamicFilePath);
             System.out.println("outputDynamicFilePath = " + outputDynamicFilePath);
-            DynamicGenerator.doGenerate(inputDynamicFilePath, outputDynamicFilePath, model);
+            DynamicFileGenerator.doGenerate(inputDynamicFilePath, outputDynamicFilePath, model);
         } catch (Exception e) {
             throw new Exception(e);
         }

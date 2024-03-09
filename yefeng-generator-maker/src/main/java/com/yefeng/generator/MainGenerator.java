@@ -1,13 +1,13 @@
 package com.yefeng.generator;
 
-import com.yefeng.model.MainTemplateConfig;
+import com.yefeng.model.DataModel;
 
 import java.io.File;
 
 
 public class MainGenerator {
     public static void main(String[] args) throws Exception {
-        MainTemplateConfig mainTemplateConfig = new MainTemplateConfig();
+        DataModel mainTemplateConfig = new DataModel();
         mainTemplateConfig.setAuthor("dexter");
         mainTemplateConfig.setLoop(false);
         mainTemplateConfig.setOutputText("最终の求和结果：");

@@ -1,7 +1,7 @@
-package com.yefeng.cli.command;
+package com.yefeng.maker.cli.command;
 
 import cn.hutool.core.util.ReflectUtil;
-import com.yefeng.model.MainTemplateConfig;
+import com.yefeng.maker.model.DataModel;
 import picocli.CommandLine;
 
 import java.lang.reflect.Field;
@@ -13,7 +13,7 @@ public class ConfigCommand implements Runnable {
         // 实现config命令的逻辑
         System.out.println("查看参数信息");
 
-        Field[] fields = ReflectUtil.getFields(MainTemplateConfig.class);
+        Field[] fields = ReflectUtil.getFields(DataModel.class);
         // 打印每个字段的信息
         for (Field field : fields) {
             System.out.println("字段名称：" + field.getName());

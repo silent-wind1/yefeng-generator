@@ -1,6 +1,6 @@
-package com.yefeng;
+package com.yefeng.maker;
 
-import com.yefeng.cli.CommandExecutor;
+import com.yefeng.maker.cli.CommandExecutor;
 
 /**
  * 全局调用入口

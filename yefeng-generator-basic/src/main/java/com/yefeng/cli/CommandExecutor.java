@@ -1,4 +1,4 @@
-package com.yefeng.cli.pattren;
+package com.yefeng.cli;
 
 
 import com.yefeng.cli.command.ConfigCommand;
