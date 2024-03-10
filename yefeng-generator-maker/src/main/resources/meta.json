@@ -6,8 +6,9 @@
   "author": "yefeng",
   "createTime": "2023-11-22",
   "fileConfig": {
-    "inputRootPath": "F:/yefeng-generator/yefeng-generator-projects/acm-template-pro",
-    "outputRootPath": "F:/yefeng-generator/generated",
+    "sourceRootPath": "F:/yefeng-generator/yefeng-generator-projects/acm-template-pro",
+    "inputRootPath": ".source/acm-template-pro",
+    "outputRootPath": "generated",
     "type": "dir",
     "files": [
       {

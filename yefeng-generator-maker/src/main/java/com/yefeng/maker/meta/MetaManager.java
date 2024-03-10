@@ -22,7 +22,8 @@ public class MetaManager {
         // 私有构造函数，防止外部用new的方式创建出多个对象
         String metaJson = ResourceUtil.readUtf8Str("meta.json");
         Meta newMeta = JSONUtil.toBean(metaJson, Meta.class);
-        // todo 校验配置文件，处理默认值
+        // 校验配置文件，处理默认值
+        MetaValidator.doValidaAndFill(newMeta);
         return newMeta;
     }
 
