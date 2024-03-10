@@ -29,7 +29,7 @@ public class DynamicFileGenerator {
         // 创建数据模型，从Main方法传递过来⏬
 
         // 如果文件不存在则创建目录
-        if(!FileUtil.exist(outputPath)) {
+        if (!FileUtil.exist(outputPath)) {
             FileUtil.touch(outputPath);
         }
 
@@ -42,6 +42,4 @@ public class DynamicFileGenerator {
         // 生成后关闭文件
         out.close();
     }
-
-
 }

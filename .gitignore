@@ -1,7 +1,7 @@
 ### Java template
 # Compiled class file
 *.class
-
+generated
 # Log file
 *.log
 
@@ -23,7 +23,7 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
-
+generated
 ### Maven template
 target/
 pom.xml.tag
@@ -68,7 +68,7 @@ buildNumber.properties
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
-
+.idea
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
