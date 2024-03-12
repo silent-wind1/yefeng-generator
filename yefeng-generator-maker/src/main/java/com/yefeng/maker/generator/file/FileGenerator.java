@@ -1,18 +1,8 @@
 package com.yefeng.maker.generator.file;
 
-import com.yefeng.maker.model.DataModel;
-
 import java.io.File;
 
-
 public class FileGenerator {
-    public static void main(String[] args) throws Exception {
-        DataModel mainTemplateConfig = new DataModel();
-        mainTemplateConfig.setAuthor("dexter");
-        mainTemplateConfig.setLoop(false);
-        mainTemplateConfig.setOutputText("最终の求和结果：");
-        doGenerate(mainTemplateConfig);
-    }
 
     /**
      * 生成静态代码和动态代码

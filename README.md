@@ -1,12 +1,12 @@
 # 项目介绍
 
-基于React + SpringBoot + Vert.x响应式编程的**定制化代码生成项目**。
+基于 Spring Boot + Picoci + 对象存储的代码生成器共享平台 **定制化代码生成项目**。
 
 
 
 ## 项目名称
 
-code craft 代码工艺
+CodeGenX 智能代码生成助手
 
 制作属于自己的代码生成器
 
