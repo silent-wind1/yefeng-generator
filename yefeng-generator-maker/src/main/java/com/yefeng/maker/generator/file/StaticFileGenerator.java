@@ -6,19 +6,6 @@ import cn.hutool.core.io.FileUtil;
 import java.io.File;
 
 public class StaticFileGenerator {
-    public static void main(String[] args) {
-        // 获取当前模块目录 F:\yefeng-generator 路径
-        String projectPath = System.getProperty("user.dir");
-
-        // 输入路径：ACM示例代码目录
-        String inputPath = projectPath + File.separator + "yefeng-generator-projects" + File.separator + "acm-template";
-        System.out.println(inputPath);
-
-        // 输出路径：yefeng-generator-maker
-        String outputPath = projectPath;
-        copyFilesByHutool(inputPath, outputPath);
-    }
-
 
     /**
      * 拷贝文件（实现方式1：Hutool实现）

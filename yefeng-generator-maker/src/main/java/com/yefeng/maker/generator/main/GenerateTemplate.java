@@ -14,7 +14,7 @@ import java.io.File;
 import java.io.IOException;
 
 public abstract class GenerateTemplate {
-    public void doGenerate() throws TemplateException, IOException, InterruptedException {
+    public void doGenerate(String[] args) throws TemplateException, IOException, InterruptedException {
         Meta meta = MetaManager.getMetaObject();
         // 获取根路径
         String projectPath = System.getProperty("user.dir");
@@ -25,7 +25,7 @@ public abstract class GenerateTemplate {
 
         // 复制原始的文件
         String sourceRootPath = meta.getFileConfig().getSourceRootPath();
-        String sourceCopyPath = outputPath + File.separator + "./source";
+        String sourceCopyPath = copySource(meta, outputPath);
         FileUtil.copy(sourceRootPath, sourceCopyPath, false);
 
         // 代码生成
@@ -171,5 +171,19 @@ public abstract class GenerateTemplate {
         inputFilePath = inputResourcePath + File.separator + "templates/pom.xml.ftl";
         outputFilePath = outputPath + File.separator + "pom.xml";
         DynamicFileGenerator.doGenerate(inputFilePath, outputFilePath, meta);
+    }
+
+    /**
+     * 复制原始的模板文件到项目目录下
+     *
+     * @param meta
+     * @param outputPath
+     * @return
+     */
+    protected String copySource(Meta meta, String outputPath) {
+        String sourceRootPath = meta.getFileConfig().getSourceRootPath();
+        String sourceCopyDestPath = outputPath + File.separator + ".source";
+        FileUtil.copy(sourceRootPath, sourceCopyDestPath, false);
+        return sourceCopyDestPath;
     }
 }
