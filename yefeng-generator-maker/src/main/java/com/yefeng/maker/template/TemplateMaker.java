@@ -55,12 +55,12 @@ public class TemplateMaker {
     /**
      * 制作模板（分步能力制作）
      *
-     * @param newMeta 新模型
-     * @param id   文件id
+     * @param newMeta           新模型
+     * @param id                文件id
      * @param originProjectPath 原始项目路径
-     * @param inputFilePath 输入路径
-     * @param modelInfo 变量参数
-     * @param searchStr 替换新内容
+     * @param inputFilePath     输入路径
+     * @param modelInfo         变量参数
+     * @param searchStr         替换新内容
      * @return
      */
     private static long makeTemplate(Meta newMeta, Long id, String originProjectPath, String inputFilePath, Meta.ModelConfig.ModelInfo modelInfo, String searchStr) {
