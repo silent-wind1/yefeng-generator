@@ -13,6 +13,8 @@ import com.yefeng.maker.meta.enums.FileTypeEnum;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,8 +31,9 @@ public class TemplateMaker {
         String projectPath = System.getProperty("user.dir");
         String originProjectPath = new File(projectPath).getParent() + File.separator + "yefeng-generator-projects/springboot-init";
         System.out.println(originProjectPath);
-        String inputFilePath = "src/main/java/com/yupi/springbootinit/common";
-
+        String inputFilePath1 = "src/main/java/com/yupi/springbootinit/common";
+        String inputFilePath2 = "src/main/java/com/yupi/springbootinit/controller";
+        List<String> inputFilePathList = Arrays.asList(inputFilePath1, inputFilePath2);
         // 模型参数信息（首次）
         Meta.ModelConfig.ModelInfo modelInfo = new Meta.ModelConfig.ModelInfo();
         modelInfo.setFieldName("outputText");
@@ -49,7 +52,7 @@ public class TemplateMaker {
 //        String searchStr = "MainTemplate";
 
         // 非首次制作时，需传入id
-        long id = makeTemplate(meta, null, originProjectPath, inputFilePath, modelInfo, searchStr);
+        long id = makeTemplate(meta, null, originProjectPath, inputFilePathList, modelInfo, searchStr);
         System.out.println(id);
     }
 
@@ -59,12 +62,12 @@ public class TemplateMaker {
      * @param newMeta           新模型
      * @param id                文件id
      * @param originProjectPath 原始项目路径
-     * @param inputFilePath     输入路径
+     * @param inputFilePathList     输入路径
      * @param modelInfo         变量参数
      * @param searchStr         替换新内容
      * @return
      */
-    private static long makeTemplate(Meta newMeta, Long id, String originProjectPath, String inputFilePath, Meta.ModelConfig.ModelInfo modelInfo, String searchStr) {
+    private static long makeTemplate(Meta newMeta, Long id, String originProjectPath, List<String> inputFilePathList, Meta.ModelConfig.ModelInfo modelInfo, String searchStr) {
         // 没有 id 则生成
         if (id == null) {
             id = IdUtil.getSnowflakeNextId();
@@ -83,22 +86,27 @@ public class TemplateMaker {
         // 一、输入信息
         // 输入文件信息
         String sourceRootPath = templatePath + File.separator + FileUtil.getLastPathEle(Paths.get(originProjectPath)).toString();
+
         // 注意 win 系统需要对路径进行转义
         sourceRootPath = sourceRootPath.replaceAll("\\\\", "/");
+
         // 二、生成文件模板
         // 输入文件为目录（这里，加上判断逻辑）
         List<Meta.FileConfig.FileInfo> newFileInfoList = new ArrayList<>();
-        String inputFileAbsolutePath = sourceRootPath + File.separator + inputFilePath;
-        if(FileUtil.isDirectory(inputFileAbsolutePath)) {
-            List<File> fileList = FileUtil.loopFiles(inputFileAbsolutePath);
-            for (File file : fileList) {
-                Meta.FileConfig.FileInfo fileInfo = makeFileTemplate(file, modelInfo, searchStr, sourceRootPath);
+        for (String inputFilePath : inputFilePathList) {
+            String inputFileAbsolutePath = sourceRootPath + File.separator + inputFilePath;
+            if(FileUtil.isDirectory(inputFileAbsolutePath)) {
+                List<File> fileList = FileUtil.loopFiles(inputFileAbsolutePath);
+                for (File file : fileList) {
+                    Meta.FileConfig.FileInfo fileInfo = makeFileTemplate(file, modelInfo, searchStr, sourceRootPath);
+                    newFileInfoList.add(fileInfo);
+                }
+            } else {
+                Meta.FileConfig.FileInfo fileInfo = makeFileTemplate(new File(inputFilePath), modelInfo, searchStr, sourceRootPath);
                 newFileInfoList.add(fileInfo);
             }
-        } else {
-            Meta.FileConfig.FileInfo fileInfo = makeFileTemplate(new File(inputFilePath), modelInfo, searchStr, sourceRootPath);
-            newFileInfoList.add(fileInfo);
         }
+
 
         // 三、生成配置文件
         String metaOutputPath = sourceRootPath + File.separator + "meta.json";
