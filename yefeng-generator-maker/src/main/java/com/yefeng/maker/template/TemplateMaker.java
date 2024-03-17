@@ -106,12 +106,12 @@ public class TemplateMaker {
     /**
      * 制作模板（分步能力制作）
      *
-     * @param newMeta                 新模型
-     * @param id                      文件id
-     * @param originProjectPath       原始项目路径
-     * @param templateMakerFileConfig 模板制作文件配置
-     * @param templateMakerModelConfig               变量参数
-     * @return
+     * @param newMeta                  新模型
+     * @param id                       文件id
+     * @param originProjectPath        原始项目路径
+     * @param templateMakerFileConfig  模板制作文件配置
+     * @param templateMakerModelConfig 变量参数
+     * @return id
      */
     private static long makeTemplate(Meta newMeta, Long id, String originProjectPath, TemplateMakerFileConfig templateMakerFileConfig, TemplateMakerModelConfig templateMakerModelConfig) {
         // 没有 id 则生成
@@ -235,10 +235,11 @@ public class TemplateMaker {
 
     /**
      * 单个文件的制作模板
-     * @param inputFile
-     * @param templateMakerModelConfig
-     * @param sourceRootPath
-     * @return
+     *
+     * @param inputFile                输入文件
+     * @param templateMakerModelConfig 模板制作模型配置
+     * @param sourceRootPath           资源根路径
+     * @return fileInfo 文件信息
      */
     private static Meta.FileConfig.FileInfo makeFileTemplate(File inputFile, TemplateMakerModelConfig templateMakerModelConfig, String sourceRootPath) {
         // 文件 --> 绝对路径 --> 相对路径
@@ -270,11 +271,11 @@ public class TemplateMaker {
         for (TemplateMakerModelConfig.ModelInfoConfig modelInfoConfig : templateMakerModelConfig.getModels()) {
             String fieldName = modelInfoConfig.getFieldName();
             // 不是分组
-            if (modelGroupConfig==null) {
-                replacement = String.format("${%s}",fieldName);
+            if (modelGroupConfig == null) {
+                replacement = String.format("${%s}", fieldName);
             } else {
                 String groupKey = modelGroupConfig.getGroupKey();
-                replacement = String.format("${%s.%s}", groupKey,fieldName);
+                replacement = String.format("${%s.%s}", groupKey, fieldName);
             }
             newFileContent = StrUtil.replace(newFileContent, modelInfoConfig.getReplaceText(), replacement);
         }
@@ -303,8 +304,8 @@ public class TemplateMaker {
     /**
      * 文件去重
      *
-     * @param fileInfoList
-     * @return
+     * @param fileInfoList 文件信息集合
+     * @return resultList 结果列表
      */
     private static List<Meta.FileConfig.FileInfo> distinctFiles(List<Meta.FileConfig.FileInfo> fileInfoList) {
         // 策略：同分组内文件 merge，不同分组保留
@@ -357,8 +358,8 @@ public class TemplateMaker {
     /**
      * 模型去重
      *
-     * @param modelInfoList
-     * @return
+     * @param modelInfoList 模型信息集合
+     * @return resultList 结果列表
      */
     private static List<Meta.ModelConfig.ModelInfo> distinctModels(List<Meta.ModelConfig.ModelInfo> modelInfoList) {
         // 策略：同分组内模型 merge，不同分组保留
