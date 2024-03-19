@@ -36,7 +36,7 @@ public class TemplateMaker {
         System.out.println(originProjectPath);
         String inputFilePath1 = "src/main/java/com/yupi/springbootinit/common";
         String inputFilePath2 = "src/main/java/com/yupi/springbootinit/controller";
-//        List<String> inputFilePathList = Arrays.asList(inputFilePath1, inputFilePath2);
+        List<String> inputFilePathList = Arrays.asList(inputFilePath1, inputFilePath2);
         // 模型参数信息（首次）
         Meta.ModelConfig.ModelInfo modelInfo = new Meta.ModelConfig.ModelInfo();
         modelInfo.setFieldName("outputText");
@@ -47,9 +47,6 @@ public class TemplateMaker {
 //        Meta.ModelConfig.ModelInfo modelInfo = new Meta.ModelConfig.ModelInfo();
 //        modelInfo.setFieldName("className");
 //        modelInfo.setType("String");
-
-        // 替换变量（首次）
-        String searchStr = "BaseResponse";
 
         // 文件过滤
         TemplateMakerFileConfig templateMakerFileConfig = new TemplateMakerFileConfig();
@@ -113,7 +110,7 @@ public class TemplateMaker {
      * @param templateMakerModelConfig 变量参数
      * @return id
      */
-    private static long makeTemplate(Meta newMeta, Long id, String originProjectPath, TemplateMakerFileConfig templateMakerFileConfig, TemplateMakerModelConfig templateMakerModelConfig) {
+    public static long makeTemplate(Meta newMeta, Long id, String originProjectPath, TemplateMakerFileConfig templateMakerFileConfig, TemplateMakerModelConfig templateMakerModelConfig) {
         // 没有 id 则生成
         if (id == null) {
             id = IdUtil.getSnowflakeNextId();
@@ -132,6 +129,7 @@ public class TemplateMaker {
         // 注意 win 系统需要对路径进行转义
         sourceRootPath = sourceRootPath.replaceAll("\\\\", "/");
         List<TemplateMakerFileConfig.FileInfoConfig> fileInfoConfigList = templateMakerFileConfig.getFiles();
+
         // 二、生成文件模板
         // 遍历输入文件
         List<Meta.FileConfig.FileInfo> newFileInfoList = new ArrayList<>();
