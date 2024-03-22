@@ -252,8 +252,9 @@ public class TemplateMaker {
 
         // 二、使用字符串替换，生成模板文件
         String fileContent;
-        // 如果已有.ftl文件，则为非首次制作
-        if (FileUtil.exist(fileOutputAbsolutePath)) {
+        // 如果已有.ftl文件，则为非首次制作，给一个判断标记_1
+        boolean hasTemplateFile = FileUtil.exist(fileOutputAbsolutePath);
+        if (hasTemplateFile) {
             fileContent = FileUtil.readUtf8String(fileOutputAbsolutePath);
         } else {
             // 读取原文件
@@ -283,16 +284,23 @@ public class TemplateMaker {
         fileInfo.setInputPath(fileInputPath);
         fileInfo.setOutputPath(fileOutputPath);
         fileInfo.setType(FileTypeEnum.FILE.getValue());
-        // fileInfo.setGenerateType(FileGenerateTypeEnum.DYNAMIC.getValue());
+        // 默认文件生成类型为 动态
+        fileInfo.setGenerateType(FileGenerateTypeEnum.DYNAMIC.getValue());
 
-        // 和原文件一致，没有挖坑，则为静态生成
-        if (newFileContent.equals(fileContent)) {
-            // 输出路径 = 输入路径
-            fileInfo.setOutputPath(fileInputPath);
-            fileInfo.setGenerateType(FileGenerateTypeEnum.STATIC.getValue());
-        } else {
-            // 生成模板文件
-            fileInfo.setGenerateType(FileGenerateTypeEnum.DYNAMIC.getValue());
+        // 修复bug：既要hasTemplateFile为false 且和原文件一致，没有挖坑，则为静态生成
+        // 判断标记_2：是否修改了文件内容
+        boolean contentEquals = newFileContent.equals(fileContent);
+        if (!hasTemplateFile) {
+            if (contentEquals) {
+                // 输出路径 = 输入路径
+                fileInfo.setOutputPath(fileInputPath);
+                fileInfo.setGenerateType(FileGenerateTypeEnum.STATIC.getValue());
+            } else {
+                // 文件有挖坑，动态生成（首次制作）
+                FileUtil.writeUtf8String(newFileContent, fileOutputAbsolutePath);
+            }
+        } else if (!contentEquals) {
+            // 有模板文件，且增加了新坑，动态生成（非首次制作）
             FileUtil.writeUtf8String(newFileContent, fileOutputAbsolutePath);
         }
         return fileInfo;
