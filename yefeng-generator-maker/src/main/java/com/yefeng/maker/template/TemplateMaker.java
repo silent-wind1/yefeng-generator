@@ -10,6 +10,7 @@ import cn.hutool.json.JSONUtil;
 import com.yefeng.maker.meta.Meta;
 import com.yefeng.maker.meta.enums.FileGenerateTypeEnum;
 import com.yefeng.maker.meta.enums.FileTypeEnum;
+import com.yefeng.maker.template.model.TemplateMakerConfig;
 import com.yefeng.maker.template.model.TemplateMakerFileConfig;
 import com.yefeng.maker.template.model.TemplateMakerModelConfig;
 
@@ -23,6 +24,21 @@ import java.util.stream.Collectors;
  */
 public class TemplateMaker {
 
+    /**
+     * 制作模板（新增）
+     *
+     * @param templateMakerConfig 模板配置
+     * @return 结果
+     */
+    public static long makeTemplate(TemplateMakerConfig templateMakerConfig) {
+        Meta meta = templateMakerConfig.getMeta();
+        Long id = templateMakerConfig.getId();
+        String originProjectPath = templateMakerConfig.getOriginProjectPath();
+        TemplateMakerFileConfig templateMakerFileConfig = templateMakerConfig.getFileConfig();
+        TemplateMakerModelConfig templateMakerModelConfig = templateMakerConfig.getModelConfig();
+
+        return makeTemplate(meta, id, originProjectPath, templateMakerFileConfig, templateMakerModelConfig);
+    }
 
     /**
      * 制作模板（分步能力制作）
@@ -125,7 +141,7 @@ public class TemplateMaker {
         }
 
         // 三、生成配置文件
-        String metaOutputPath = sourceRootPath + File.separator + "meta.json";
+        String metaOutputPath = templatePath + File.separator + "meta.json";
         // 如果已有meta.json文件，则为非首次制作
         if (FileUtil.exist(metaOutputPath)) {
             Meta oldMeta = JSONUtil.toBean(FileUtil.readUtf8String(metaOutputPath), Meta.class);
@@ -209,8 +225,9 @@ public class TemplateMaker {
 
         // 将文件配置 fileInfo 的构造提前，无论是新增还是修改元信息都能使用该对象
         Meta.FileConfig.FileInfo fileInfo = new Meta.FileConfig.FileInfo();
-        fileInfo.setInputPath(fileInputPath);
-        fileInfo.setOutputPath(fileOutputPath);
+        // 修复3：注意文件的输入路径和输出路径要交换，元信息中 .ftl 文件是输入文件
+        fileInfo.setInputPath(fileOutputPath);
+        fileInfo.setOutputPath(fileInputPath);
         fileInfo.setType(FileTypeEnum.FILE.getValue());
         // 默认文件生成类型为 动态
         fileInfo.setGenerateType(FileGenerateTypeEnum.DYNAMIC.getValue());
@@ -266,7 +283,7 @@ public class TemplateMaker {
             List<Meta.FileConfig.FileInfo> newFileInfoList = new ArrayList<>(tempFileInfoList.stream()
                     .flatMap(fileInfo -> fileInfo.getFiles().stream())
                     .collect(
-                            Collectors.toMap(Meta.FileConfig.FileInfo::getInputPath, o -> o, (e, r) -> r)
+                            Collectors.toMap(Meta.FileConfig.FileInfo::getOutputPath, o -> o, (e, r) -> r)
                     ).values());
 
             // 使用新的 group 配置
@@ -284,7 +301,7 @@ public class TemplateMaker {
                 .collect(Collectors.toList());
         resultList.addAll(new ArrayList<>(noGroupFileInfoList.stream()
                 .collect(
-                        Collectors.toMap(Meta.FileConfig.FileInfo::getInputPath, o -> o, (e, r) -> r)
+                        Collectors.toMap(Meta.FileConfig.FileInfo::getOutputPath, o -> o, (e, r) -> r)
                 ).values()));
         return resultList;
     }
