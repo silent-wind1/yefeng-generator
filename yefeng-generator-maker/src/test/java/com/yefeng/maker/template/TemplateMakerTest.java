@@ -47,7 +47,7 @@ public class TemplateMakerTest {
         modelInfoConfig1.setReplaceText("jdbc:mysql://localhost:3306/my_db");
         templateMakerModelConfig.setModels(Arrays.asList(modelInfoConfig1));
 
-        long id = TemplateMaker.makeTemplate(meta, 1744705904383320064L, originProjectPath, templateMakerFileConfig, templateMakerModelConfig);
+        long id = TemplateMaker.makeTemplate(meta, 1744705904383320064L, originProjectPath, templateMakerFileConfig, templateMakerModelConfig, null);
         System.out.println(id);
     }
 
@@ -77,7 +77,7 @@ public class TemplateMakerTest {
         modelInfoConfig1.setReplaceText("BaseResponse");
         templateMakerModelConfig.setModels(Arrays.asList(modelInfoConfig1));
 
-        long id = TemplateMaker.makeTemplate(meta, 1744705904383320064L, originProjectPath, templateMakerFileConfig, templateMakerModelConfig);
+        long id = TemplateMaker.makeTemplate(meta, 1744705904383320064L, originProjectPath, templateMakerFileConfig, templateMakerModelConfig, null);
         System.out.println(id);
     }
 
@@ -109,5 +109,9 @@ public class TemplateMakerTest {
         templateMakerConfig = JSONUtil.toBean(configStr, TemplateMakerConfig.class);
         TemplateMaker.makeTemplate(templateMakerConfig);
         System.out.println(id);
+
+        configStr = ResourceUtil.readUtf8Str(rootPath + File.separator +"templateMaker2.json");
+        templateMakerConfig = JSONUtil.toBean(configStr, TemplateMakerConfig.class);
+        TemplateMaker.makeTemplate(templateMakerConfig);
     }
 }

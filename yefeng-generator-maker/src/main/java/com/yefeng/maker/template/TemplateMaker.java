@@ -13,6 +13,7 @@ import com.yefeng.maker.meta.enums.FileTypeEnum;
 import com.yefeng.maker.template.model.TemplateMakerConfig;
 import com.yefeng.maker.template.model.TemplateMakerFileConfig;
 import com.yefeng.maker.template.model.TemplateMakerModelConfig;
+import com.yefeng.maker.template.model.TemplateMakerOutputConfig;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -36,8 +37,8 @@ public class TemplateMaker {
         String originProjectPath = templateMakerConfig.getOriginProjectPath();
         TemplateMakerFileConfig templateMakerFileConfig = templateMakerConfig.getFileConfig();
         TemplateMakerModelConfig templateMakerModelConfig = templateMakerConfig.getModelConfig();
-
-        return makeTemplate(meta, id, originProjectPath, templateMakerFileConfig, templateMakerModelConfig);
+        TemplateMakerOutputConfig templateMakeroutputConfig = templateMakerConfig.getOutputConfig();
+        return makeTemplate(meta, id, originProjectPath, templateMakerFileConfig, templateMakerModelConfig, templateMakeroutputConfig);
     }
 
     /**
@@ -50,7 +51,7 @@ public class TemplateMaker {
      * @param templateMakerModelConfig 变量参数
      * @return id
      */
-    public static long makeTemplate(Meta newMeta, Long id, String originProjectPath, TemplateMakerFileConfig templateMakerFileConfig, TemplateMakerModelConfig templateMakerModelConfig) {
+    public static long makeTemplate(Meta newMeta, Long id, String originProjectPath, TemplateMakerFileConfig templateMakerFileConfig, TemplateMakerModelConfig templateMakerModelConfig, TemplateMakerOutputConfig templateMakerOutputConfig) {
         // 没有 id 则生成
         if (id == null) {
             id = IdUtil.getSnowflakeNextId();
@@ -110,7 +111,15 @@ public class TemplateMaker {
             modelConfig.setModels(modelInfoList);
             modelInfoList.addAll(newModelInfoList);
         }
-        // 2. 输出元信息文件
+
+        // 2. 额外的去重
+        if (templateMakerOutputConfig != null) {
+            if (templateMakerOutputConfig.isRemoveGroupFilesFromRoot()) {
+                List<Meta.FileConfig.FileInfo> filesInfoList = newMeta.getFileConfig().getFiles();
+                newMeta.getFileConfig().setFiles(TemplateMakerUtils.removeGroupFilesFromRoot(filesInfoList));
+            }
+        }
+        // 3. 输出元信息文件
         FileUtil.writeUtf8String(JSONUtil.toJsonPrettyStr(newMeta), metaOutputPath);
         return id;
     }
@@ -168,10 +177,10 @@ public class TemplateMaker {
     /**
      * 生成多个文件
      *
-     * @param templateMakerFileConfig
-     * @param templateMakerModelConfig
-     * @param sourceRootPath
-     * @return
+     * @param templateMakerFileConfig  模板制作文件配置
+     * @param templateMakerModelConfig 模制作模型配置
+     * @param sourceRootPath           资源根路径
+     * @return newFileInfoList
      */
     private static List<Meta.FileConfig.FileInfo> makerFileTemplates(TemplateMakerFileConfig templateMakerFileConfig, TemplateMakerModelConfig templateMakerModelConfig, String sourceRootPath) {
         List<Meta.FileConfig.FileInfo> newFileInfoList = new ArrayList<>();
@@ -310,9 +319,6 @@ public class TemplateMaker {
     private static List<Meta.FileConfig.FileInfo> distinctFiles(List<Meta.FileConfig.FileInfo> fileInfoList) {
         // 策略：同分组内文件 merge，不同分组保留
 
-        // 1. 有分组的，以组为单位划分
-        // {"groupKey": "a", "files": [1, 2]}, {"groupKey": "a", "files": [2, 3]}, {"groupKey": "b", "files": [4, 5]}
-        // {"groupKey": "a", "files": [[1, 2], [2, 3]]}, {"groupKey": "b", "files": [[4, 5]]}
         Map<String, List<Meta.FileConfig.FileInfo>> groupKeyFileInfoListMap = fileInfoList
                 .stream()
                 .filter(fileInfo -> StrUtil.isNotBlank(fileInfo.getGroupKey()))
@@ -322,9 +328,6 @@ public class TemplateMaker {
 
 
         // 2. 同组内的文件配置合并
-        // {"groupKey": "a", "files": [[1, 2], [2, 3]]}
-        // {"groupKey": "a", "files": [1, 2, 2, 3]}
-        // {"groupKey": "a", "files": [1, 2, 3]}
         // 保存每个组对应的合并后的对象 map
         Map<String, Meta.FileConfig.FileInfo> groupKeyMergedFileInfoMap = new HashMap<>();
         for (Map.Entry<String, List<Meta.FileConfig.FileInfo>> entry : groupKeyFileInfoListMap.entrySet()) {
@@ -363,7 +366,6 @@ public class TemplateMaker {
      */
     private static List<Meta.ModelConfig.ModelInfo> distinctModels(List<Meta.ModelConfig.ModelInfo> modelInfoList) {
         // 策略：同分组内模型 merge，不同分组保留
-
         // 1. 有分组的，以组为单位划分
         Map<String, List<Meta.ModelConfig.ModelInfo>> groupKeyModelInfoListMap = modelInfoList
                 .stream()
@@ -371,8 +373,6 @@ public class TemplateMaker {
                 .collect(
                         Collectors.groupingBy(Meta.ModelConfig.ModelInfo::getGroupKey)
                 );
-
-
         // 2. 同组内的模型配置合并
         // 保存每个组对应的合并后的对象 map
         Map<String, Meta.ModelConfig.ModelInfo> groupKeyMergedModelInfoMap = new HashMap<>();
