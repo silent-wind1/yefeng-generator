@@ -65,7 +65,14 @@ public class TemplateMaker {
         }
 
         // 一、输入信息 输入文件信息
-        String sourceRootPath = templatePath + File.separator + FileUtil.getLastPathEle(Paths.get(originProjectPath)).toString();
+        // 输入文件信息，获取项目目录
+        String sourceRootPath = FileUtil.loopFiles(new File(templatePath), 1, null)
+                .stream()
+                .filter(File::isDirectory) // 判断文件是否为目录
+                .findFirst() // 文件目录下可能有多个文件，我们获取第一个目录
+                .orElseThrow(RuntimeException::new) // 因为findFirst返回的是一个Optional类，所以有问题我们直接把这个异常抛出
+                .getAbsolutePath(); // 获取相对路径
+
         // 注意 win 系统需要对路径进行转义
         sourceRootPath = sourceRootPath.replaceAll("\\\\", "/");
         // 二、生成文件模板
