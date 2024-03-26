@@ -155,18 +155,13 @@ public class TemplateMaker {
         // - 如果是模型组
         TemplateMakerModelConfig.ModelGroupConfig modelGroupConfig = templateMakerModelConfig.getModelGroupConfig();
         if (modelGroupConfig != null) {
-            String condition = modelGroupConfig.getCondition();
-            String groupKey = modelGroupConfig.getGroupKey();
-            String groupName = modelGroupConfig.getGroupName();
-            Meta.ModelConfig.ModelInfo groupModelInfo = new Meta.ModelConfig.ModelInfo();
-            groupModelInfo.setGroupKey(groupKey);
-            groupModelInfo.setGroupName(groupName);
-            groupModelInfo.setCondition(condition);
+            Meta.ModelConfig.ModelInfo gourpModelInfo = new Meta.ModelConfig.ModelInfo();
+            BeanUtil.copyProperties(modelGroupConfig, gourpModelInfo);
 
             // 模型全放到一个分组内
-            groupModelInfo.setModels(inputModelInfoList);
+            gourpModelInfo.setModels(inputModelInfoList);
             newModelInfoList = new ArrayList<>();
-            newModelInfoList.add(groupModelInfo);
+            newModelInfoList.add(gourpModelInfo);
         } else {
             // 不分组，添加所有的模型信息到列表
             newModelInfoList.addAll(inputModelInfoList);
