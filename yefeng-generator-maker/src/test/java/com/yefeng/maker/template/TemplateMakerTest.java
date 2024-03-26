@@ -113,5 +113,9 @@ public class TemplateMakerTest {
         configStr = ResourceUtil.readUtf8Str(rootPath + File.separator +"templateMaker2.json");
         templateMakerConfig = JSONUtil.toBean(configStr, TemplateMakerConfig.class);
         TemplateMaker.makeTemplate(templateMakerConfig);
+
+        configStr = ResourceUtil.readUtf8Str(rootPath + File.separator +"templateMaker3.json");
+        templateMakerConfig = JSONUtil.toBean(configStr, TemplateMakerConfig.class);
+        TemplateMaker.makeTemplate(templateMakerConfig);
     }
 }

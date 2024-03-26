@@ -208,7 +208,7 @@ public class TemplateMaker {
                     .filter(file -> !file.getAbsolutePath().endsWith(".ftl"))
                     .collect(Collectors.toList());
             for (File file : fileList) {
-                Meta.FileConfig.FileInfo fileInfo = makeFileTemplate(file, templateMakerModelConfig, sourceRootPath);
+                Meta.FileConfig.FileInfo fileInfo = makeFileTemplate(file, fileInfoConfig, templateMakerModelConfig, sourceRootPath);
                 newFileInfoList.add(fileInfo);
             }
         }
@@ -237,11 +237,13 @@ public class TemplateMaker {
      * 单个文件的制作模板
      *
      * @param inputFile                输入文件
+     * @param fileInfoConfig            文件配置信息
      * @param templateMakerModelConfig 模板制作模型配置
      * @param sourceRootPath           资源根路径
      * @return fileInfo 文件信息
      */
-    private static Meta.FileConfig.FileInfo makeFileTemplate(File inputFile, TemplateMakerModelConfig templateMakerModelConfig, String sourceRootPath) {
+    private static Meta.FileConfig.FileInfo makeFileTemplate(File inputFile, TemplateMakerFileConfig.FileInfoConfig fileInfoConfig,
+                                                             TemplateMakerModelConfig templateMakerModelConfig, String sourceRootPath) {
         // 文件 --> 绝对路径 --> 相对路径
         // 绝对路径
         String fileInputAbsolutePath = inputFile.getAbsolutePath().replaceAll("\\\\", "/");
@@ -286,6 +288,7 @@ public class TemplateMaker {
         // 修复3：注意文件的输入路径和输出路径要交换，元信息中 .ftl 文件是输入文件
         fileInfo.setInputPath(fileOutputPath);
         fileInfo.setOutputPath(fileInputPath);
+        fileInfo.setCondition(fileInfoConfig.getCondition());
         fileInfo.setType(FileTypeEnum.FILE.getValue());
         // 默认文件生成类型为 动态
         fileInfo.setGenerateType(FileGenerateTypeEnum.DYNAMIC.getValue());
