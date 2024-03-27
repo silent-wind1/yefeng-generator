@@ -9,12 +9,34 @@
     ]
   },
   "modelConfig": {
+    "modelGroupConfig": {
+      "groupKey": "docsConfig",
+      "groupName": "接口文档配置",
+      "type": "DocsConfig",
+      "description": "用于生成接口文档配置",
+      "condition": "needDocs"
+    },
     "models": [
       {
-        "fieldName": "needDocs",
-        "type": "boolean",
-        "description": "是否开启接口文档功能",
-        "defaultValue": true
+        "fieldName": "title",
+        "type": "String",
+        "description": "接口文档标题",
+        "defaultValue": "接口文档-me",
+        "replaceText": "接口文档"
+      },
+      {
+        "fieldName": "description",
+        "type": "String",
+        "description": "接口文档描述",
+        "defaultValue": "springboot-init-me",
+        "replaceText": "springboot-init"
+      },
+      {
+        "fieldName": "version",
+        "type": "String",
+        "description": "接口文档版本",
+        "defaultValue": "1.x",
+        "replaceText": "1.0"
       }
     ]
   }

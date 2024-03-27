@@ -9,8 +9,8 @@ public class Main {
     public static void main(String[] args) {
         MainGenerator mainGenerator = new MainGenerator();
         try {
-            args = new String[]{"generate", "--needGit=false"};
-            mainGenerator.doGenerate(args);
+//            args = new String[]{"generate", "--needGit=false"};
+            mainGenerator.doGenerate();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

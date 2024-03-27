@@ -14,7 +14,7 @@ import java.io.File;
 import java.io.IOException;
 
 public abstract class GenerateTemplate {
-    public void doGenerate(String[] args) throws TemplateException, IOException, InterruptedException {
+    public void doGenerate() throws TemplateException, IOException, InterruptedException {
         Meta meta = MetaManager.getMetaObject();
         // 获取根路径
         String projectPath = System.getProperty("user.dir");
@@ -159,14 +159,15 @@ public abstract class GenerateTemplate {
         DynamicFileGenerator.doGenerate(inputFilePath, outputFilePath, meta);
 
         // README.md
-        inputFilePath = inputResourcePath + File.separator + "templates/README.md.ftl";
-        outputFilePath = outputPath + File.separator + "README.md";
-        DynamicFileGenerator.doGenerate(inputFilePath, outputFilePath, meta);
+//        inputFilePath = inputResourcePath + File.separator + "templates/README.md.ftl";
+//        outputFilePath = outputPath + File.separator + "README.md";
+//        DynamicFileGenerator.doGenerate(inputFilePath, outputFilePath, meta);
 
         // .gitignore
-        inputFilePath = inputResourcePath + File.separator + "templates/.gitignore.ftl";
-        outputFilePath = outputPath + File.separator + ".gitignore";
-        DynamicFileGenerator.doGenerate(inputFilePath, outputFilePath, meta);
+//        inputFilePath = inputResourcePath + File.separator + "templates/.gitignore.ftl";
+//        outputFilePath = outputPath + File.separator + ".gitignore";
+//        DynamicFileGenerator.doGenerate(inputFilePath, outputFilePath, meta);
+
         // pom.xml
         inputFilePath = inputResourcePath + File.separator + "templates/pom.xml.ftl";
         outputFilePath = outputPath + File.separator + "pom.xml";
