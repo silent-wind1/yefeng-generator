@@ -56,28 +56,28 @@ public class GenerateCommand implements Callable<Integer> {
         </#if>
     </#list>
 
-    <#-- 生成调用方法 -->
-    public Integer call() throws Exception {
-    <#list modelConfig.models as modelInfo>
-        <#if modelInfo.groupKey??>
-            <#if modelInfo.condition??>
-                if (${modelInfo.condition}) {
-                <@generateCommand indent="            " modelInfo = modelInfo />
-                }
-            <#else>
-                <@generateCommand indent="        " modelInfo = modelInfo />
+        <#-- 生成调用方法 -->
+        public Integer call() throws Exception {
+        <#list modelConfig.models as modelInfo>
+            <#if modelInfo.groupKey??>
+                <#if modelInfo.condition??>
+                    if (${modelInfo.condition}) {
+                        <@generateCommand indent="            " modelInfo = modelInfo />
+                    }
+                <#else>
+                        <@generateCommand indent="        " modelInfo = modelInfo />
+                </#if>
             </#if>
-        </#if>
-    </#list>
-    <#-- 填充数据模型对象 -->
-    DataModel dataModel = new DataModel();
-    BeanUtil.copyProperties(this, dataModel);
-    <#list modelConfig.models as modelInfo>
-        <#if modelInfo.groupKey??>
-            dataModel.${modelInfo.groupKey} = ${modelInfo.groupKey};
-        </#if>
-    </#list>
-    FileGenerator.doGenerate(dataModel);
-    return 0;
+        </#list>
+        <#-- 填充数据模型对象 -->
+        DataModel dataModel = new DataModel();
+        BeanUtil.copyProperties(this, dataModel);
+        <#list modelConfig.models as modelInfo>
+            <#if modelInfo.groupKey??>
+                dataModel.${modelInfo.groupKey} = ${modelInfo.groupKey};
+            </#if>
+        </#list>
+        FileGenerator.doGenerate(dataModel);
+        return 0;
     }
 }

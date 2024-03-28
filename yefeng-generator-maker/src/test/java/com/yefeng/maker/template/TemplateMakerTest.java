@@ -108,7 +108,6 @@ public class TemplateMakerTest {
         configStr = ResourceUtil.readUtf8Str(rootPath + File.separator +"templateMaker1.json");
         templateMakerConfig = JSONUtil.toBean(configStr, TemplateMakerConfig.class);
         TemplateMaker.makeTemplate(templateMakerConfig);
-        System.out.println(id);
 
         configStr = ResourceUtil.readUtf8Str(rootPath + File.separator +"templateMaker2.json");
         templateMakerConfig = JSONUtil.toBean(configStr, TemplateMakerConfig.class);
@@ -122,6 +121,10 @@ public class TemplateMakerTest {
         templateMakerConfig = JSONUtil.toBean(configStr, TemplateMakerConfig.class);
         TemplateMaker.makeTemplate(templateMakerConfig);
 
+        configStr = ResourceUtil.readUtf8Str(rootPath + File.separator +"templateMaker4_1.json");
+        templateMakerConfig = JSONUtil.toBean(configStr, TemplateMakerConfig.class);
+        TemplateMaker.makeTemplate(templateMakerConfig);
+
         configStr = ResourceUtil.readUtf8Str(rootPath + File.separator +"templateMaker5.json");
         templateMakerConfig = JSONUtil.toBean(configStr, TemplateMakerConfig.class);
         TemplateMaker.makeTemplate(templateMakerConfig);
@@ -131,10 +134,6 @@ public class TemplateMakerTest {
         TemplateMaker.makeTemplate(templateMakerConfig);
 
         configStr = ResourceUtil.readUtf8Str(rootPath + File.separator +"templateMaker7.json");
-        templateMakerConfig = JSONUtil.toBean(configStr, TemplateMakerConfig.class);
-        TemplateMaker.makeTemplate(templateMakerConfig);
-
-        configStr = ResourceUtil.readUtf8Str(rootPath + File.separator +"templateMaker8.json");
         templateMakerConfig = JSONUtil.toBean(configStr, TemplateMakerConfig.class);
         TemplateMaker.makeTemplate(templateMakerConfig);
     }

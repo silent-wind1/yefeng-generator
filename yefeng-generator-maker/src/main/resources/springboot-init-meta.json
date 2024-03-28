@@ -35,6 +35,12 @@
                         "generateType": "dynamic"
                     },
                     {
+                        "inputPath": "src/main/java/com/yupi/springbootinit/model/dto/post/PostEsDTO.java.ftl",
+                        "outputPath": "src/main/java/com/yupi/springbootinit/model/dto/post/PostEsDTO.java",
+                        "type": "file",
+                        "generateType": "dynamic"
+                    },
+                    {
                         "inputPath": "src/main/java/com/yupi/springbootinit/model/dto/post/PostUpdateRequest.java.ftl",
                         "outputPath": "src/main/java/com/yupi/springbootinit/model/dto/post/PostUpdateRequest.java",
                         "type": "file",
@@ -65,13 +71,6 @@
                         "generateType": "dynamic"
                     }
                 ]
-            },
-            {
-                "inputPath": "src/main/java/com/yupi/springbootinit/model/dto/post/PostEsDTO.java.ftl",
-                "outputPath": "src/main/java/com/yupi/springbootinit/model/dto/post/PostEsDTO.java",
-                "type": "file",
-                "generateType": "dynamic",
-                "condition": "needPost && needEs"
             },
             {
                 "inputPath": "src/main/java/com/yupi/springbootinit/common/ErrorCode.java.ftl",
@@ -319,19 +318,19 @@
                         "fieldName": "description",
                         "type": "String",
                         "description": "接口文档描述",
-                        "defaultValue": "springboot-init-me"
+                        "defaultValue": "springboot-init"
                     },
                     {
                         "fieldName": "title",
                         "type": "String",
                         "description": "接口文档标题",
-                        "defaultValue": "接口文档-me"
+                        "defaultValue": "接口文档"
                     },
                     {
                         "fieldName": "version",
                         "type": "String",
                         "description": "接口文档版本",
-                        "defaultValue": "1.x"
+                        "defaultValue": "1.0"
                     }
                 ],
                 "condition": "needDocs"

@@ -76,6 +76,9 @@ public class TemplateMaker {
 
         // 注意 win 系统需要对路径进行转义
         sourceRootPath = sourceRootPath.replaceAll("\\\\", "/");
+
+        List<TemplateMakerFileConfig.FileInfoConfig> fileInfoConfigList = templateMakerFileConfig.getFiles();
+
         // 二、生成文件模板
         List<Meta.FileConfig.FileInfo> newFileInfoList = makerFileTemplates(templateMakerFileConfig, templateMakerModelConfig, sourceRootPath);
         // 处理模型信息
@@ -83,6 +86,7 @@ public class TemplateMaker {
 
         // 三、生成配置文件
         String metaOutputPath = templatePath + File.separator + "meta.json";
+
         // 如果已有meta.json文件，则为非首次制作
         if (FileUtil.exist(metaOutputPath)) {
             Meta oldMeta = JSONUtil.toBean(FileUtil.readUtf8String(metaOutputPath), Meta.class);
@@ -294,7 +298,7 @@ public class TemplateMaker {
         if (!hasTemplateFile) {
             if (contentEquals) {
                 // 输出路径 = 输入路径
-                fileInfo.setOutputPath(fileInputPath);
+                fileInfo.setInputPath(fileInputPath);
                 fileInfo.setGenerateType(FileGenerateTypeEnum.STATIC.getValue());
             } else {
                 // 文件有挖坑，动态生成（首次制作）

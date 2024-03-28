@@ -17,19 +17,11 @@ public class FileGenerator {
         File parentFile = new File(projectPath).getParentFile();
         // 输入路径 ACM 的示例模板在 yefeng-generator-projects 目录下
         String inputPath = new File(parentFile + File.separator + "yefeng-generator-projects/acm-template").getAbsolutePath();
-        System.out.println("static inputPath = " + inputPath);
         // 生成静态文件
         StaticFileGenerator.copyFilesByHutool(inputPath, projectPath);
-
         // 生成动态文件，会覆盖部分已生成的静态文件
         String inputDynamicFilePath = projectPath + File.separator + "src/main/resources/templates/MainTemplate.java.ftl";
         String outputDynamicFilePath = projectPath + File.separator + "acm-template/src/com/yupi/acm/MainTemplate2.java";
-        try {
-            System.out.println("inputDynamicFilePath =" + inputDynamicFilePath);
-            System.out.println("outputDynamicFilePath = " + outputDynamicFilePath);
-            DynamicFileGenerator.doGenerate(inputDynamicFilePath, outputDynamicFilePath, model);
-        } catch (Exception e) {
-            throw new Exception(e);
-        }
+        DynamicFileGenerator.doGenerate(inputDynamicFilePath, outputDynamicFilePath, model);
     }
 }
