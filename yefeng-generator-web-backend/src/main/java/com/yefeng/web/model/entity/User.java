@@ -33,11 +33,6 @@ public class User implements Serializable {
     private String userPassword;
 
     /**
-     * 公众号openId
-     */
-    private String mpOpenId;
-
-    /**
      * 用户昵称
      */
     private String userName;

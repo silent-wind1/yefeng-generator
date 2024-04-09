@@ -6,7 +6,6 @@ import com.yefeng.web.model.dto.user.UserQueryRequest;
 import com.yefeng.web.model.entity.User;
 import com.yefeng.web.model.vo.LoginUserVO;
 import com.yefeng.web.model.vo.UserVO;
-import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;

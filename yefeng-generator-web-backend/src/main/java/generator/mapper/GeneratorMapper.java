@@ -1,8 +1,7 @@
-package com.yefeng.web.mapper;
+package generator.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.yefeng.web.model.entity.Generator;
-
+import generator.domain.Generator;
 
 /**
 * @author 29515
