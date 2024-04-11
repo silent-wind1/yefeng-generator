@@ -1,14 +1,14 @@
-import { updateUserUsingPost } from '@/services/backend/userController';
+import { updateGeneratorUsingPost } from '@/services/backend/generatorController';
 import { ProColumns, ProTable } from '@ant-design/pro-components';
 import '@umijs/max';
 import { message, Modal } from 'antd';
 import React from 'react';
 
 interface Props {
-  oldData?: API.User;
+  oldData?: API.Generator;
   visible: boolean;
-  columns: ProColumns<API.User>[];
-  onSubmit: (values: API.UserAddRequest) => void;
+  columns: ProColumns<API.Generator>[];
+  onSubmit: (values: API.GeneratorAddRequest) => void;
   onCancel: () => void;
 }
 
@@ -17,10 +17,13 @@ interface Props {
  *
  * @param fields
  */
-const handleUpdate = async (fields: API.UserUpdateRequest) => {
+const handleUpdate = async (fields: API.GeneratorUpdateRequest) => {
+  // 关于文件/模型配置的特殊处理
+  fields.fileConfig = JSON.parse((fields.fileConfig || '{}') as string);
+  fields.modelConfig = JSON.parse((fields.modelConfig || '{}') as string);
   const hide = message.loading('正在更新');
   try {
-    await updateUserUsingPost(fields);
+    await updateGeneratorUsingPost(fields);
     hide();
     message.success('更新成功');
     return true;
@@ -57,9 +60,14 @@ const UpdateModal: React.FC<Props> = (props) => {
         type="form"
         columns={columns}
         form={{
-          initialValues: oldData,
+          // initialValues: oldData,
+          // 关于标签的特殊处理
+          initialValues: {
+            ...oldData,
+            tags: JSON.parse(oldData.tags || '[]'),
+          },
         }}
-        onSubmit={async (values: API.UserAddRequest) => {
+        onSubmit={async (values: API.GeneratorAddRequest) => {
           const success = await handleUpdate({
             ...values,
             id: oldData.id as any,
