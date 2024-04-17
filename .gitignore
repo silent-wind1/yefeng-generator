@@ -123,3 +123,5 @@ fabric.properties
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
 
+# 忽略提交本地配置文件 防止密码泄露
+application-local.yml

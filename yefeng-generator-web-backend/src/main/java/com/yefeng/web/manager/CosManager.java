@@ -1,6 +1,8 @@
 package com.yefeng.web.manager;
 
 import com.qcloud.cos.COSClient;
+import com.qcloud.cos.model.COSObject;
+import com.qcloud.cos.model.GetObjectRequest;
 import com.qcloud.cos.model.PutObjectRequest;
 import com.qcloud.cos.model.PutObjectResult;
 import com.yefeng.web.config.CosClientConfig;
@@ -11,9 +13,6 @@ import java.io.File;
 
 /**
  * Cos 对象存储操作
- *
- * @author <a href="https://github.com/liyefeng">程序员鱼皮</a>
- * @from <a href="https://yefeng.icu">编程导航知识星球</a>
  */
 @Component
 public class CosManager {
@@ -27,7 +26,7 @@ public class CosManager {
     /**
      * 上传对象
      *
-     * @param key 唯一键
+     * @param key           唯一键
      * @param localFilePath 本地文件路径
      * @return
      */
@@ -40,7 +39,7 @@ public class CosManager {
     /**
      * 上传对象
      *
-     * @param key 唯一键
+     * @param key  唯一键
      * @param file 文件
      * @return
      */
@@ -48,5 +47,16 @@ public class CosManager {
         PutObjectRequest putObjectRequest = new PutObjectRequest(cosClientConfig.getBucket(), key,
                 file);
         return cosClient.putObject(putObjectRequest);
+    }
+
+    /**
+     * 下载对象
+     *
+     * @param key 唯一键
+     * @return 下载结果
+     */
+    public COSObject getObject(String key) {
+        GetObjectRequest getObjectRequest = new GetObjectRequest(cosClientConfig.getBucket(), key);
+        return cosClient.getObject(getObjectRequest);
     }
 }
