@@ -3,6 +3,7 @@ package com.yefeng.maker.generator.main;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ClassPathResource;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.ZipUtil;
 import com.yefeng.maker.generator.JarGenerator;
 import com.yefeng.maker.generator.ScriptGenerator;
 import com.yefeng.maker.generator.file.DynamicFileGenerator;
@@ -48,7 +49,7 @@ public abstract class GenerateTemplate {
      * @param jarPath jar路径
      * @param shellOutputFilePath  脚本文件输出路径
      */
-    protected void buildDist(String outputPath, String sourceCopyPath, String jarPath, String shellOutputFilePath) {
+    protected String buildDist(String outputPath, String sourceCopyPath, String jarPath, String shellOutputFilePath) {
         String distOutputPath = outputPath + "-dist";
         // 拷贝jar包
         String targetAbsolutePath = distOutputPath + File.separator + "target";
@@ -60,6 +61,7 @@ public abstract class GenerateTemplate {
         FileUtil.copy(shellOutputFilePath + ".bat", distOutputPath, true);
         // 拷贝模板文件
         FileUtil.copy(sourceCopyPath, distOutputPath, true);
+        return distOutputPath;
     }
 
     /**
@@ -86,6 +88,17 @@ public abstract class GenerateTemplate {
         JarGenerator.doGenerate(outputPath);
         String jarName = String.format("%s-%s-jar-with-dependencies.jar", meta.getName(), meta.getVersion());
         return "target/" + jarName;
+    }
+
+    /**
+     * 制作压缩包
+     * @param outputPath 输出路径
+     * @return 压缩包路径
+     */
+    protected String buildZip(String outputPath) {
+        String zipPath = outputPath + ".zip";
+        ZipUtil.zip(outputPath, zipPath);
+        return zipPath;
     }
 
     /**
@@ -177,9 +190,9 @@ public abstract class GenerateTemplate {
     /**
      * 复制原始的模板文件到项目目录下
      *
-     * @param meta
-     * @param outputPath
-     * @return
+     * @param meta 圆信息
+     * @param outputPath 输出路径
+     * @return 资源拷贝后的路径
      */
     protected String copySource(Meta meta, String outputPath) {
         String sourceRootPath = meta.getFileConfig().getSourceRootPath();
