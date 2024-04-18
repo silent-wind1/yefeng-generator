@@ -1,5 +1,9 @@
 import {COS_HOST} from '@/constants';
-import {testDownloadFileUsingGet, uploadFileUsingPost} from '@/services/backend/fileController';
+import {
+  testDownloadFileUsingGet,
+  testUploadFileUsingPost,
+  uploadFileUsingPost
+} from '@/services/backend/fileController';
 import {InboxOutlined} from '@ant-design/icons';
 import {PageContainer} from '@ant-design/pro-components';
 import {Button, Card, Divider, Flex, message, Upload, UploadProps} from 'antd';
@@ -17,13 +21,7 @@ const TestFilePage: React.FC = () => {
     maxCount: 1,
     customRequest: async (fileObj: any) => {
       try {
-        const res = await uploadFileUsingPost(
-          {
-            biz: 'test',
-          },
-          {},
-          fileObj.file,
-        );
+        const res = await testUploadFileUsingPost({}, fileObj.file);
         fileObj.onSuccess(res.data);
         setValue(res.data);
       } catch (e: any) {
@@ -37,7 +35,7 @@ const TestFilePage: React.FC = () => {
   };
   return (
     <PageContainer>
-      <Flex gap={16}>
+      <Flex gap={16} justify="center">
         <Card title="文件上传">
           <Dragger {...props}>
             <p className="ant-upload-drag-icon">
@@ -53,7 +51,9 @@ const TestFilePage: React.FC = () => {
         <Card title="文件下载">
           文件地址: {COS_HOST + value}
           <Divider/>
-          <img src={COS_HOST + value} alt="" height={200}/>
+          <Flex justify="center">
+            <img src={COS_HOST + value} alt="" height={200}/>
+          </Flex>
           <Divider/>
           <Button
             onClick={async () => {
