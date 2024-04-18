@@ -7,13 +7,13 @@ import generator.service.GeneratorService;
 import org.springframework.stereotype.Service;
 
 /**
-* @author 29515
-* @description 针对表【generator(代码生成器)】的数据库操作Service实现
-* @createDate 2024-04-09 18:57:23
-*/
+ * @author 29515
+ * @description 针对表【generator(代码生成器)】的数据库操作Service实现
+ * @createDate 2024-04-09 18:57:23
+ */
 @Service
 public class GeneratorServiceImpl extends ServiceImpl<GeneratorMapper, Generator>
-    implements GeneratorService{
+        implements GeneratorService {
 
 }
 

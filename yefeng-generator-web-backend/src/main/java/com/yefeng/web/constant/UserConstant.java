@@ -2,12 +2,8 @@ package com.yefeng.web.constant;
 
 /**
  * 用户常量
- *
- * @author <a href="https://github.com/liyefeng">程序员鱼皮</a>
- * @from <a href="https://yefeng.icu">编程导航知识星球</a>
  */
 public interface UserConstant {
-
     /**
      * 用户登录态键
      */
@@ -29,6 +25,4 @@ public interface UserConstant {
      * 被封号
      */
     String BAN_ROLE = "ban";
-
-    // endregion
 }

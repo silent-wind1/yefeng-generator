@@ -28,9 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * 帖子接口
- *
- * @author <a href="https://github.com/liyefeng">程序员鱼皮</a>
- * @from <a href="https://yefeng.icu">编程导航知识星球</a>
  */
 @RestController
 @RequestMapping("/generator")
@@ -167,7 +164,7 @@ public class GeneratorController {
      */
     @PostMapping("/list/page/vo")
     public BaseResponse<Page<GeneratorVO>> listGeneratorVOByPage(@RequestBody GeneratorQueryRequest generatorQueryRequest,
-                                                            HttpServletRequest request) {
+                                                                 HttpServletRequest request) {
         long current = generatorQueryRequest.getCurrent();
         long size = generatorQueryRequest.getPageSize();
         // 限制爬虫
@@ -186,7 +183,7 @@ public class GeneratorController {
      */
     @PostMapping("/my/list/page/vo")
     public BaseResponse<Page<GeneratorVO>> listMyGeneratorVOByPage(@RequestBody GeneratorQueryRequest generatorQueryRequest,
-                                                              HttpServletRequest request) {
+                                                                   HttpServletRequest request) {
         if (generatorQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }

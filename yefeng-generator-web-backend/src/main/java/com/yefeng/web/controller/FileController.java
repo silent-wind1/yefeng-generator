@@ -30,7 +30,6 @@ import java.util.Arrays;
 
 /**
  * 文件接口
- *
  */
 @RestController
 @RequestMapping("/file")
@@ -46,11 +45,12 @@ public class FileController {
 
     /**
      * 测试文件上传
+     *
      * @param multipartFile
      * @return
      */
     @PostMapping("/test/upload")
-    public BaseResponse<String> testUploadFile(@RequestPart("file")MultipartFile multipartFile) {
+    public BaseResponse<String> testUploadFile(@RequestPart("file") MultipartFile multipartFile) {
         // 文件目录
         String fileName = multipartFile.getOriginalFilename();
         String filePath = String.format("test/%s", fileName);
@@ -83,7 +83,7 @@ public class FileController {
      */
     @PostMapping("/upload")
     public BaseResponse<String> uploadFile(@RequestPart("file") MultipartFile multipartFile,
-            UploadFileRequest uploadFileRequest, HttpServletRequest request) {
+                                           UploadFileRequest uploadFileRequest, HttpServletRequest request) {
         String biz = uploadFileRequest.getBiz();
         FileUploadBizEnum fileUploadBizEnum = FileUploadBizEnum.getEnumByValue(biz);
         if (fileUploadBizEnum == null) {
