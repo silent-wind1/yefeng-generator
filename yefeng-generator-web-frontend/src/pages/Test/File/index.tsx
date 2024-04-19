@@ -13,7 +13,10 @@ import React, {useState} from 'react';
 const {Dragger} = Upload;
 
 const TestFilePage: React.FC = () => {
-  const [value, setValue] = useState<string>();
+  let [value, setValue] = useState<string>();
+  if (value === undefined) {
+    value = ""
+  }
 
   const props: UploadProps = {
     name: 'file',
@@ -43,8 +46,7 @@ const TestFilePage: React.FC = () => {
             </p>
             <p className="ant-upload-text">选择你要上传的文件</p>
             <p className="ant-upload-hint">
-              Support for a single or bulk upload. Strictly prohibit from uploading company data or
-              other band files
+              上传的文件不要太大哦，控制在2MB以内，太大会把人家弄坏的！弄坏人家，人家就没办法给你服务了
             </p>
           </Dragger>
         </Card>
