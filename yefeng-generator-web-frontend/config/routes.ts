@@ -16,6 +16,12 @@ export default [
     hideInMenu: true,
   },
   {
+    path: '/generator/add',
+    icon: 'plus',
+    component: './Generator/Add',
+    name: '创建生成器',
+  },
+  {
     path: '/admin',
     icon: 'crown',
     name: '管理页',
