@@ -1,9 +1,6 @@
 package com.yefeng.web.model.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -14,9 +11,11 @@ import java.util.Date;
  *
  * @TableName generator
  */
-@TableName(value = "generator")
 @Data
+@TableName(value = "generator")
 public class Generator implements Serializable {
+    @TableField(exist = false)
+    private static final long serialVersionUID = 1L;
     /**
      * id
      */
@@ -96,8 +95,6 @@ public class Generator implements Serializable {
     /**
      * 是否删除
      */
+    @TableLogic
     private Integer isDelete;
-
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
 }

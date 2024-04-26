@@ -12,6 +12,8 @@ import java.util.List;
 @Data
 public class GeneratorAddRequest implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 名称
      */
@@ -67,5 +69,4 @@ public class GeneratorAddRequest implements Serializable {
      */
     private Integer status;
 
-    private static final long serialVersionUID = 1L;
 }
