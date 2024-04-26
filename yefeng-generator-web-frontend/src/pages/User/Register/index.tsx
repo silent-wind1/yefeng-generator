@@ -1,11 +1,11 @@
 import Footer from '@/components/Footer';
-import { userRegisterUsingPost } from '@/services/backend/userController';
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { LoginForm, ProFormText } from '@ant-design/pro-components';
-import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { Helmet, history, Link } from '@umijs/max';
-import { message, Tabs } from 'antd';
-import React, { useState } from 'react';
+import {userRegisterUsingPost} from '@/services/backend/userController';
+import {LockOutlined, UserOutlined} from '@ant-design/icons';
+import {LoginForm, ProFormText} from '@ant-design/pro-components';
+import {useEmotionCss} from '@ant-design/use-emotion-css';
+import {Helmet, history, Link} from '@umijs/max';
+import {message, Tabs} from 'antd';
+import React, {useState} from 'react';
 import Settings from '../../../../config/defaultSettings';
 
 const UserRegisterPage: React.FC = () => {

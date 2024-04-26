@@ -1,12 +1,12 @@
-import { userLogoutUsingPost } from '@/services/backend/userController';
-import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
-import { history, useModel } from '@umijs/max';
-import { Avatar, Button, Space } from 'antd';
-import { stringify } from 'querystring';
-import type { MenuInfo } from 'rc-menu/lib/interface';
-import React, { useCallback } from 'react';
-import { flushSync } from 'react-dom';
-import { Link } from 'umi';
+import {userLogoutUsingPost} from '@/services/backend/userController';
+import {LogoutOutlined, SettingOutlined, UserOutlined} from '@ant-design/icons';
+import {history, useModel} from '@umijs/max';
+import {Avatar, Button, Space} from 'antd';
+import {stringify} from 'querystring';
+import type {MenuInfo} from 'rc-menu/lib/interface';
+import React, {useCallback} from 'react';
+import {flushSync} from 'react-dom';
+import {Link} from 'umi';
 import HeaderDropdown from '../HeaderDropdown';
 
 export type GlobalHeaderRightProps = {

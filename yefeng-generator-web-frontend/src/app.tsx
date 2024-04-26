@@ -1,11 +1,11 @@
 import logo from '@/assets/logo.jpg';
 import Footer from '@/components/Footer';
-import { getLoginUserUsingGet } from '@/services/backend/userController';
-import type { RunTimeLayoutConfig } from '@umijs/max';
-import { history } from '@umijs/max';
+import {getLoginUserUsingGet} from '@/services/backend/userController';
+import type {RunTimeLayoutConfig} from '@umijs/max';
+import {history} from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
-import { AvatarDropdown } from './components/RightContent/AvatarDropdown';
-import { requestConfig } from './requestConfig';
+import {AvatarDropdown} from './components/RightContent/AvatarDropdown';
+import {requestConfig} from './requestConfig';
 
 const loginPath = '/user/login';
 

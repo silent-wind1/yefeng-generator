@@ -1,9 +1,5 @@
 import {COS_HOST} from '@/constants';
-import {
-  testDownloadFileUsingGet,
-  testUploadFileUsingPost,
-  uploadFileUsingPost
-} from '@/services/backend/fileController';
+import {testDownloadFileUsingGet, testUploadFileUsingPost} from '@/services/backend/fileController';
 import {InboxOutlined} from '@ant-design/icons';
 import {PageContainer} from '@ant-design/pro-components';
 import {Button, Card, Divider, Flex, message, Upload, UploadProps} from 'antd';

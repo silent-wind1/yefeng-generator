@@ -9,10 +9,10 @@ export default [
   },
   {path: '/', icon: 'home', component: './Index', name: '主页'},
   {
-    path: '/test/file',
+    path: '/generator/detail/:id',
     icon: 'home',
-    component: './Test/File',
-    name: '文件上传下载测试',
+    component: './Generator/Detail',
+    name: '生成器详情',
     hideInMenu: true,
   },
   {
@@ -20,6 +20,13 @@ export default [
     icon: 'plus',
     component: './Generator/Add',
     name: '创建生成器',
+  },
+  {
+    path: '/generator/update',
+    icon: 'plus',
+    component: './Generator/Add',
+    name: '修改生成器',
+    hideInMenu: true,
   },
   {
     path: '/admin',

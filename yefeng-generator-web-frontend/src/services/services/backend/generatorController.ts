@@ -1,6 +1,6 @@
 // @ts-ignore
 /* eslint-disable */
-import { request } from '@umijs/max';
+import {request} from '@umijs/max';
 
 /** addGenerator POST /api/generator/add */
 export async function addGeneratorUsingPost(

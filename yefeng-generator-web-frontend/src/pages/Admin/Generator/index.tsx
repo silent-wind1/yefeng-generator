@@ -1,15 +1,12 @@
 import CreateModal from '@/pages/Admin/Generator/components/CreateModal';
 import UpdateModal from '@/pages/Admin/Generator/components/UpdateModal';
-import {
-  deleteGeneratorUsingPost,
-  listGeneratorByPageUsingPost,
-} from '@/services/backend/generatorController';
-import { PlusOutlined } from '@ant-design/icons';
-import type { ActionType, ProColumns } from '@ant-design/pro-components';
-import { ProTable } from '@ant-design/pro-components';
+import {deleteGeneratorUsingPost, listGeneratorByPageUsingPost,} from '@/services/backend/generatorController';
+import {PlusOutlined} from '@ant-design/icons';
+import type {ActionType, ProColumns} from '@ant-design/pro-components';
+import {ProTable} from '@ant-design/pro-components';
 import '@umijs/max';
-import { Button, message, Select, Space, Tag, Typography } from 'antd';
-import React, { useRef, useState } from 'react';
+import {Button, message, Select, Space, Tag, Typography} from 'antd';
+import React, {useRef, useState} from 'react';
 
 /**
  * 代码生成器管理页面

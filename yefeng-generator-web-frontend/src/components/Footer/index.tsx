@@ -1,5 +1,5 @@
-import { GithubOutlined } from '@ant-design/icons';
-import { DefaultFooter } from '@ant-design/pro-components';
+import {GithubOutlined} from '@ant-design/icons';
+import {DefaultFooter} from '@ant-design/pro-components';
 import '@umijs/max';
 import React from 'react';
 
