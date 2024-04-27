@@ -1,7 +1,7 @@
-import {uploadFileUsingPost} from '@/services/backend/fileController';
-import {PlusOutlined} from '@ant-design/icons';
-import {message, Upload, UploadProps} from 'antd';
-import React, {useState} from 'react';
+import { uploadFileUsingPost } from '@/services/backend/fileController';
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { message, Upload, UploadProps } from 'antd';
+import React, { useState } from 'react';
 import {COS_HOST} from "@/constants";
 
 interface Props {
@@ -20,11 +20,10 @@ const PictureUploader: React.FC<Props> = (props) => {
 
   const uploadProps: UploadProps = {
     name: 'file',
+    listType: 'picture-card',
     multiple: false,
     maxCount: 1,
-    listType: 'picture-card',
     showUploadList: false,
-    disabled: loading,
     customRequest: async (fileObj: any) => {
       setLoading(true);
       try {
@@ -35,9 +34,10 @@ const PictureUploader: React.FC<Props> = (props) => {
           {},
           fileObj.file,
         );
-        const fullPath =  res.data;
+        // 拼接完整图片路径
+        const fullPath = COS_HOST + res.data;
         onChange?.(fullPath ?? '');
-        fileObj.onSuccess(res.data);
+        fileObj.onSuccess(fullPath);
       } catch (e: any) {
         message.error('上传失败，' + e.message);
         fileObj.onError(e);
@@ -47,10 +47,10 @@ const PictureUploader: React.FC<Props> = (props) => {
   };
 
   const uploadButton = (
-    <button style={{ border: 0, background: 'none' }} type="button">
-      <PlusOutlined />
+    <div>
+      {loading ? <LoadingOutlined /> : <PlusOutlined />}
       <div style={{ marginTop: 8 }}>上传图片</div>
-    </button>
+    </div>
   );
 
   return (
