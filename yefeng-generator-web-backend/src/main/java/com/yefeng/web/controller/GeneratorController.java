@@ -15,6 +15,7 @@ import com.yefeng.web.constant.UserConstant;
 import com.yefeng.web.exception.BusinessException;
 import com.yefeng.web.exception.ThrowUtils;
 import com.yefeng.web.manager.CosManager;
+import com.yefeng.web.meta.Meta;
 import com.yefeng.web.model.dto.generator.GeneratorAddRequest;
 import com.yefeng.web.model.dto.generator.GeneratorEditRequest;
 import com.yefeng.web.model.dto.generator.GeneratorQueryRequest;
@@ -32,6 +33,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * 帖子接口

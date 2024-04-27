@@ -1,20 +1,24 @@
 package com.yefeng.web.config;
 
 import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import org.apache.ibatis.reflection.MetaObject;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 /**
  * MyBatis Plus 配置
  *
- * @author https://github.com/liyefeng
  */
 @Configuration
 @MapperScan("com.yefeng.web.mapper")
-public class MyBatisPlusConfig {
+public class MyBatisPlusConfig  implements MetaObjectHandler {
 
     /**
      * 拦截器配置
@@ -27,5 +31,17 @@ public class MyBatisPlusConfig {
         // 分页插件
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
         return interceptor;
+    }
+
+    @Override
+    public void insertFill(MetaObject metaObject) {
+        this.strictInsertFill(metaObject, "createTime", LocalDateTime::now, LocalDateTime.class); // 起始版本 3.3.3(推荐)
+        this.strictInsertFill(metaObject, "updateTime", LocalDateTime::now, LocalDateTime.class); // 起始版本 3.3.3(推荐)
+    }
+
+
+    @Override
+    public void updateFill(MetaObject metaObject) {
+        this.strictInsertFill(metaObject, "updateTime", LocalDateTime::now, LocalDateTime.class); // 起始版本 3.3.3(推荐)
     }
 }
