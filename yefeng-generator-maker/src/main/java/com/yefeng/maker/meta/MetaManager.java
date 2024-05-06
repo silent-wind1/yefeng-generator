@@ -20,7 +20,8 @@ public class MetaManager {
 
     private static Meta initMata() {
         // 私有构造函数，防止外部用new的方式创建出多个对象
-        String metaJson = ResourceUtil.readUtf8Str("springboot-init-meta.json");
+//        String metaJson = ResourceUtil.readUtf8Str("springboot-init-meta.json");
+        String metaJson = ResourceUtil.readUtf8Str("templateMaker.json");
         Meta newMeta = JSONUtil.toBean(metaJson, Meta.class);
         // 校验配置文件，处理默认值
         MetaValidator.doValidaAndFill(newMeta);

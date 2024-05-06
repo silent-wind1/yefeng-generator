@@ -146,6 +146,11 @@ public abstract class GenerateTemplate {
         outputFilePath = outputBaseJavaPackagePath + "/cli/command/ListCommand.java";
         DynamicFileGenerator.doGenerate(inputFilePath, outputFilePath, meta);
 
+        // cli.command.JsonGenerateCommand
+        inputFilePath = inputResourcePath + File.separator + "templates/java/cli/command/JsonGenerateCommand.java.ftl";
+        outputFilePath = outputBaseJavaPackagePath + "/cli/command/JsonGenerateCommand.java";
+        DynamicFileGenerator.doGenerate(inputFilePath, outputFilePath, meta);
+
         // cli.CommandExecutor
         inputFilePath = inputResourcePath + File.separator + "templates/java/cli/CommandExecutor.java.ftl";
         outputFilePath = outputBaseJavaPackagePath + "/cli/CommandExecutor.java";
@@ -172,14 +177,14 @@ public abstract class GenerateTemplate {
         DynamicFileGenerator.doGenerate(inputFilePath, outputFilePath, meta);
 
         // README.md
-//        inputFilePath = inputResourcePath + File.separator + "templates/README.md.ftl";
-//        outputFilePath = outputPath + File.separator + "README.md";
-//        DynamicFileGenerator.doGenerate(inputFilePath, outputFilePath, meta);
+        inputFilePath = inputResourcePath + File.separator + "templates/README.md.ftl";
+        outputFilePath = outputPath + File.separator + "README.md";
+        DynamicFileGenerator.doGenerate(inputFilePath, outputFilePath, meta);
 
         // .gitignore
-//        inputFilePath = inputResourcePath + File.separator + "templates/.gitignore.ftl";
-//        outputFilePath = outputPath + File.separator + ".gitignore";
-//        DynamicFileGenerator.doGenerate(inputFilePath, outputFilePath, meta);
+        inputFilePath = inputResourcePath + File.separator + "templates/.gitignore.ftl";
+        outputFilePath = outputPath + File.separator + ".gitignore";
+        DynamicFileGenerator.doGenerate(inputFilePath, outputFilePath, meta);
 
         // pom.xml
         inputFilePath = inputResourcePath + File.separator + "templates/pom.xml.ftl";

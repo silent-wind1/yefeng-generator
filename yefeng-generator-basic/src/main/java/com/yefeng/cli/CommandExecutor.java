@@ -3,6 +3,7 @@ package com.yefeng.cli;
 
 import com.yefeng.cli.command.ConfigCommand;
 import com.yefeng.cli.command.GenerateCommand;
+import com.yefeng.cli.command.JsonGenerateCommand;
 import com.yefeng.cli.command.ListCommand;
 import picocli.CommandLine;
 
@@ -14,7 +15,8 @@ public class CommandExecutor implements Runnable {
         commandLine = new CommandLine(this)
                 .addSubcommand(new GenerateCommand())
                 .addSubcommand(new ConfigCommand())
-                .addSubcommand(new ListCommand());
+                .addSubcommand(new ListCommand())
+                .addSubcommand(new JsonGenerateCommand());
     }
 
     @Override
