@@ -1,11 +1,14 @@
 package com.yefeng.web.controller;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.ZipUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.qcloud.cos.model.COSObject;
 import com.qcloud.cos.model.COSObjectInputStream;
 import com.qcloud.cos.utils.IOUtils;
+import com.qcloud.cos.utils.StringUtils;
 import com.yefeng.web.annotation.AuthCheck;
 import com.yefeng.web.common.BaseResponse;
 import com.yefeng.web.common.DeleteRequest;
@@ -16,10 +19,7 @@ import com.yefeng.web.exception.BusinessException;
 import com.yefeng.web.exception.ThrowUtils;
 import com.yefeng.web.manager.CosManager;
 import com.yefeng.web.meta.Meta;
-import com.yefeng.web.model.dto.generator.GeneratorAddRequest;
-import com.yefeng.web.model.dto.generator.GeneratorEditRequest;
-import com.yefeng.web.model.dto.generator.GeneratorQueryRequest;
-import com.yefeng.web.model.dto.generator.GeneratorUpdateRequest;
+import com.yefeng.web.model.dto.generator.*;
 import com.yefeng.web.model.entity.Generator;
 import com.yefeng.web.model.entity.User;
 import com.yefeng.web.model.vo.GeneratorVO;
@@ -32,8 +32,16 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+
+import static cn.hutool.poi.excel.sax.AttributeName.t;
 
 /**
  * 帖子接口
@@ -286,4 +294,108 @@ public class GeneratorController {
             }
         }
     }
+
+    /**
+     * 使用代码生成器
+     * @param generatorUseRequest
+     * @param request
+     * @param response
+     */
+    @PostMapping("/use")
+    public void useGenerate(@RequestBody GeneratorUseRequest generatorUseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // 获取用户输入的参数
+        Long id = generatorUseRequest.getId();
+        Map<String, Object> dataModel = generatorUseRequest.getDataModel();
+        User loginUser = userService.getLoginUser(request);
+        log.info("userId = {} 使用了生成器 id = {}", loginUser.getId(), id);
+
+        Generator generator = generatorService.getById(id);
+        if (generator == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        // 生成器路径
+        String distPath = generator.getDistPath();
+        if (StrUtil.isBlank(distPath)) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, "产物包不存在");
+        }
+
+        // 从对象存储下载器的压缩包
+        //定义独立空间
+        String projectPath = System.getProperty("user.dir");
+        String tempDirPath = String.format("%s/.tmp/use/%s", projectPath, id);
+        String zipFilePath = tempDirPath + "/dist.zip";
+        if(!FileUtil.exist(zipFilePath)) {
+            FileUtil.touch(zipFilePath);
+        }
+
+        try {
+            cosManager.download(distPath, zipFilePath);
+        } catch (InterruptedException e) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, "生成器下载失败");
+        }
+        // 解压压缩包，得到脚本文件
+        File unzipDishDir = ZipUtil.zip(zipFilePath);
+        // 将用户输入的参数写到json中
+        String dataModelFilePath = tempDirPath + "/dataModel.json";
+        String jsonStr = JSONUtil.toJsonStr(dataModel);
+        FileUtil.writeUtf8String(jsonStr, dataModelFilePath);
+        // 查找脚本文件所在路径
+        File scriptFile = FileUtil.loopFiles(unzipDishDir, 2, null)
+                .stream()
+                .filter(file -> file.isFile() && "generator.bat".equals(file.getName()))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+
+        // 添加可执行权限
+        try {
+            Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwxrwxrwx");
+            Files.setPosixFilePermissions(scriptFile.toPath(), permissions);
+        } catch (Exception e) {
+
+        }
+        // 构造命令
+        File scriptDir = scriptFile.getParentFile();
+        // 注意，如果是 mac / linux 系统，要用 "./generator"
+        String scriptAbsolutePath = scriptFile.getAbsolutePath().replace("\\", "/");
+        String[] commands = new String[] {scriptAbsolutePath, "json-generate", "--file=" + dataModelFilePath};
+
+        // 这里一定要拆分！
+        ProcessBuilder processBuilder = new ProcessBuilder(commands);
+        processBuilder.directory(scriptDir);
+
+        try {
+            Process process = processBuilder.start();
+
+            // 读取命令的输出
+            InputStream inputStream = process.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+
+            // 等待命令执行完成
+            int exitCode = process.waitFor();
+            System.out.println("命令执行结束，退出码：" + exitCode);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "执行生成器脚本错误");
+        }
+
+        // 压缩得到的生成结果，返回给前端
+        String generatedPath = scriptDir.getAbsolutePath() + "/generated";
+        String resultPath = tempDirPath + "/result.zip";
+        File resultFile = ZipUtil.zip(generatedPath, resultPath);
+
+        // 设置响应头
+        response.setContentType("application/octet-stream;charset=UTF-8");
+        response.setHeader("Content-Disposition", "attachment; filename=" + resultFile.getName());
+        Files.copy(resultFile.toPath(), response.getOutputStream());
+
+        // 清理文件
+        CompletableFuture.runAsync(() -> {
+            FileUtil.del(tempDirPath);
+        });
+    }
+
 }
