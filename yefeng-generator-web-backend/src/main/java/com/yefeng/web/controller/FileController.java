@@ -8,7 +8,6 @@ import com.yefeng.web.annotation.AuthCheck;
 import com.yefeng.web.common.BaseResponse;
 import com.yefeng.web.common.ErrorCode;
 import com.yefeng.web.common.ResultUtils;
-import com.yefeng.web.constant.FileConstant;
 import com.yefeng.web.constant.UserConstant;
 import com.yefeng.web.exception.BusinessException;
 import com.yefeng.web.manager.CosManager;
