@@ -8,7 +8,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.qcloud.cos.model.COSObject;
 import com.qcloud.cos.model.COSObjectInputStream;
 import com.qcloud.cos.utils.IOUtils;
-import com.qcloud.cos.utils.StringUtils;
 import com.yefeng.web.annotation.AuthCheck;
 import com.yefeng.web.common.BaseResponse;
 import com.yefeng.web.common.DeleteRequest;
@@ -18,7 +17,6 @@ import com.yefeng.web.constant.UserConstant;
 import com.yefeng.web.exception.BusinessException;
 import com.yefeng.web.exception.ThrowUtils;
 import com.yefeng.web.manager.CosManager;
-import com.yefeng.web.meta.Meta;
 import com.yefeng.web.model.dto.generator.*;
 import com.yefeng.web.model.entity.Generator;
 import com.yefeng.web.model.entity.User;
@@ -36,12 +34,9 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-
-import static cn.hutool.poi.excel.sax.AttributeName.t;
 
 /**
  * 帖子接口
@@ -296,16 +291,18 @@ public class GeneratorController {
     }
 
     /**
-     * 使用代码生成器
-     * @param generatorUseRequest
-     * @param request
-     * @param response
+     * 在线使用代码生成器
+     *
+     * @param generatorUseRequest 请求参数
+     * @param request             请求对象上下文
      */
     @PostMapping("/use")
-    public void useGenerate(@RequestBody GeneratorUseRequest generatorUseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // 获取用户输入的参数
+    public void useGenerator(@RequestBody GeneratorUseRequest generatorUseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // 获取用户输入的请求参数
         Long id = generatorUseRequest.getId();
         Map<String, Object> dataModel = generatorUseRequest.getDataModel();
+
+        // 需要用户登录
         User loginUser = userService.getLoginUser(request);
         log.info("userId = {} 使用了生成器 id = {}", loginUser.getId(), id);
 
@@ -313,36 +310,45 @@ public class GeneratorController {
         if (generator == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
-        // 生成器路径
+
+        // 生成器的存储路径
         String distPath = generator.getDistPath();
         if (StrUtil.isBlank(distPath)) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, "产物包不存在");
         }
 
-        // 从对象存储下载器的压缩包
-        //定义独立空间
+        // 从对象存储下载生成器的压缩包
+
+        // 定义独立的工作空间
         String projectPath = System.getProperty("user.dir");
-        String tempDirPath = String.format("%s/.tmp/use/%s", projectPath, id);
+        String tempDirPath = String.format("%s/.temp/use/%s", projectPath, id);
         String zipFilePath = tempDirPath + "/dist.zip";
-        if(!FileUtil.exist(zipFilePath)) {
+
+        if (!FileUtil.exist(zipFilePath)) {
             FileUtil.touch(zipFilePath);
         }
 
         try {
             cosManager.download(distPath, zipFilePath);
-        } catch (InterruptedException e) {
-            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, "生成器下载失败");
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "生成器下载失败");
         }
+
         // 解压压缩包，得到脚本文件
-        File unzipDishDir = ZipUtil.zip(zipFilePath);
-        // 将用户输入的参数写到json中
+        File unzipDistDir = ZipUtil.unzip(zipFilePath);
+
+        // 将用户输入的参数写到 json 文件中
         String dataModelFilePath = tempDirPath + "/dataModel.json";
         String jsonStr = JSONUtil.toJsonStr(dataModel);
         FileUtil.writeUtf8String(jsonStr, dataModelFilePath);
-        // 查找脚本文件所在路径
-        File scriptFile = FileUtil.loopFiles(unzipDishDir, 2, null)
+
+        // 执行脚本
+        // 找到脚本文件所在路径
+        // 要注意，如果不是 windows 系统，找 generator 文件而不是 bat
+        File scriptFile = FileUtil.loopFiles(unzipDistDir, 2, null)
                 .stream()
-                .filter(file -> file.isFile() && "generator.bat".equals(file.getName()))
+                .filter(file -> file.isFile()
+                        && "generator.bat".equals(file.getName()))
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
 
@@ -353,6 +359,7 @@ public class GeneratorController {
         } catch (Exception e) {
 
         }
+
         // 构造命令
         File scriptDir = scriptFile.getParentFile();
         // 注意，如果是 mac / linux 系统，要用 "./generator"
@@ -397,5 +404,4 @@ public class GeneratorController {
             FileUtil.del(tempDirPath);
         });
     }
-
 }

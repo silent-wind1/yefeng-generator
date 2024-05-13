@@ -57,7 +57,7 @@ public abstract class GenerateTemplate {
         String jarAbsolutePath = outputPath + File.separator + jarPath;
         FileUtil.copy(jarAbsolutePath, targetAbsolutePath, true);
         // 拷贝脚本文件
-        FileUtil.copy(shellOutputFilePath, distOutputPath, true); // 这文件没有生成
+//        FileUtil.copy(shellOutputFilePath, distOutputPath, true); // 这文件没有生成
         FileUtil.copy(shellOutputFilePath + ".bat", distOutputPath, true);
         // 拷贝模板文件
         FileUtil.copy(sourceCopyPath, distOutputPath, true);

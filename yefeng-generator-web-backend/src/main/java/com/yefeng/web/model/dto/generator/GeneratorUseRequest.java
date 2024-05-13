@@ -1,10 +1,8 @@
 package com.yefeng.web.model.dto.generator;
 
-import com.yefeng.web.meta.Meta;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Map;
 
 /**

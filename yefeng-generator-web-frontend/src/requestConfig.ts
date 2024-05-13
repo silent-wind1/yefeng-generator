@@ -40,6 +40,12 @@ export const requestConfig: RequestConfig = {
       if (!data) {
         throw new Error('服务异常');
       }
+
+      // 文件下载时 直接返回
+      if (data instanceof Blob) {
+        return response;
+      }
+
       // 文件下载时，直接返回
       if(requestPath.includes("download")) {
         return response;
@@ -60,6 +66,8 @@ export const requestConfig: RequestConfig = {
       if (code !== 0) {
         throw new Error(data.message ?? '服务器错误');
       }
+
+
       return response;
     },
   ],
