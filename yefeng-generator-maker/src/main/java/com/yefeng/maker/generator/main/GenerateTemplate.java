@@ -20,14 +20,25 @@ public abstract class GenerateTemplate {
         // 获取根路径
         String projectPath = System.getProperty("user.dir");
         String outputPath = projectPath + File.separator + "generator" + File.separator + meta.getName();
+        doGenerate(meta, outputPath);
+    }
+
+    /**
+     * 生成文件
+     * @param meta 元信息
+     * @param outputPath 输出路径
+     * @throws TemplateException
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public void doGenerate(Meta meta, String outputPath) throws TemplateException, IOException, InterruptedException {
+        // 判断改路径是否存在
         if (!FileUtil.exist(outputPath)) {
             FileUtil.mkdir(outputPath);
         }
 
         // 复制原始的文件
-        String sourceRootPath = meta.getFileConfig().getSourceRootPath();
         String sourceCopyPath = copySource(meta, outputPath);
-        FileUtil.copy(sourceRootPath, sourceCopyPath, false);
 
         // 代码生成
         generateCode(meta, outputPath);
@@ -110,8 +121,7 @@ public abstract class GenerateTemplate {
      */
     protected void generateCode(Meta meta, String outputPath) throws IOException, TemplateException {
         // 读取resources目录
-        ClassPathResource classPathResource = new ClassPathResource("");
-        String inputResourcePath = classPathResource.getAbsolutePath();
+        String inputResourcePath = "";
         // Java包基础路径 com.yefeng
         String outputBasePackage = meta.getBasePackage();
         // com/yefeng

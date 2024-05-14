@@ -1,6 +1,8 @@
 package com.yefeng.web.controller;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
 import cn.hutool.json.JSONUtil;
@@ -8,6 +10,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.qcloud.cos.model.COSObject;
 import com.qcloud.cos.model.COSObjectInputStream;
 import com.qcloud.cos.utils.IOUtils;
+import com.yefeng.maker.generator.main.GenerateTemplate;
+import com.yefeng.maker.generator.main.ZipGenerator;
+import com.yefeng.maker.meta.Meta;
+import com.yefeng.maker.meta.MetaValidator;
 import com.yefeng.web.annotation.AuthCheck;
 import com.yefeng.web.common.BaseResponse;
 import com.yefeng.web.common.DeleteRequest;
@@ -32,6 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Map;
@@ -398,6 +405,82 @@ public class GeneratorController {
         response.setContentType("application/octet-stream;charset=UTF-8");
         response.setHeader("Content-Disposition", "attachment; filename=" + resultFile.getName());
         Files.copy(resultFile.toPath(), response.getOutputStream());
+
+        // 清理文件
+        CompletableFuture.runAsync(() -> {
+            FileUtil.del(tempDirPath);
+        });
+    }
+
+    /**
+     * 制作代码生成器
+     * @param generatorMakeRequest
+     * @param request
+     * @param response
+     * @throws IOException
+     */
+    @PostMapping("/make")
+    public void makeGenerator(@RequestBody GeneratorMakeRequest generatorMakeRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // 输入参数
+        String zipFilePath = generatorMakeRequest.getZipFilePath();
+        Meta meta = generatorMakeRequest.getMeta();
+
+        // 需要用户登录
+        User loginUser = userService.getLoginUser(request);
+
+        // 创建独立工作空间，下载压缩包到本地文件
+        if (StrUtil.isBlank(zipFilePath)) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, "压缩包不存在");
+        }
+
+        // 工作区间
+        String projectPath = System.getProperty("user.dir");
+        // 随机id
+        String id = IdUtil.getSnowflakeNextId() + RandomUtil.randomString(6);
+        String tempDirPath = String.format("%s/.temp/make/%s", projectPath, id);
+        String localZipFilePath = tempDirPath + "/project.zip";
+
+        // 新建文件
+        if (!FileUtil.exist(localZipFilePath)) {
+            FileUtil.touch(localZipFilePath);
+        }
+
+        try {
+            cosManager.download(zipFilePath, localZipFilePath);
+        } catch (InterruptedException e) {
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "压缩包下载失败");
+        }
+        //解压，得到模板文件
+        File unzipDistDir = ZipUtil.unzip(localZipFilePath);
+
+        log.info("unzipDistDir = {} ", unzipDistDir);
+
+        //构造meta对象
+        String sourcePath = unzipDistDir.getAbsolutePath();
+
+        meta.getFileConfig().setSourceRootPath(sourcePath);
+        MetaValidator.doValidaAndFill(meta);
+        String outputPath = String.format("%s/generated/%s", tempDirPath, meta.getName());
+
+        // 调用 maker 方法制作生成器
+        GenerateTemplate generateTemplate = new ZipGenerator();
+        try {
+            generateTemplate.doGenerate(meta, outputPath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "制作失败");
+        }
+        // 下载压缩的产物包文件
+        String suffix = "-dist.zip";
+        String zipFileName = meta.getName() + suffix;
+        String distZipFilePath = outputPath + suffix;
+
+        // 下载文件
+        // 设置响应头
+        response.setContentType("application/octet-stream;charset=UTF-8");
+        response.setHeader("Content-Disposition", "attachment; filename=" + zipFileName);
+        // 写入响应
+        Files.copy(Paths.get(distZipFilePath), response.getOutputStream());
 
         // 清理文件
         CompletableFuture.runAsync(() -> {
