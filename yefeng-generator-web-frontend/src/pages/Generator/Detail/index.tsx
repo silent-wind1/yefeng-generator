@@ -2,13 +2,13 @@ import AuthorInfo from '@/pages/Generator/Detail/components/AuthorInfo';
 import FileConfig from '@/pages/Generator/Detail/components/FileConfig';
 import ModelConfig from '@/pages/Generator/Detail/components/ModelConfig';
 import {downloadGeneratorByIdUsingGet, getGeneratorVoByIdUsingGet} from '@/services/backend/generatorController';
-import { Link, useModel, useParams } from '@@/exports';
-import { DownloadOutlined, EditOutlined } from '@ant-design/icons';
-import { PageContainer } from '@ant-design/pro-components';
-import { Button, Card, Col, Image, message, Row, Space, Tabs, Tag, Typography } from 'antd';
-import { saveAs } from 'file-saver';
+import {Link, useModel, useParams} from '@@/exports';
+import {DownloadOutlined, EditOutlined} from '@ant-design/icons';
+import {PageContainer} from '@ant-design/pro-components';
+import {Button, Card, Col, Image, message, Row, Space, Tabs, Tag, Typography} from 'antd';
+import {saveAs} from 'file-saver';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 
 /**
  * 生成器详情页

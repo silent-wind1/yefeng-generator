@@ -1,5 +1,5 @@
-import { FileOutlined, InfoCircleOutlined } from '@ant-design/icons';
-import { Descriptions, DescriptionsProps, Divider } from 'antd';
+import {FileOutlined, InfoCircleOutlined} from '@ant-design/icons';
+import {Descriptions, DescriptionsProps, Divider} from 'antd';
 import React from 'react';
 
 interface Props {

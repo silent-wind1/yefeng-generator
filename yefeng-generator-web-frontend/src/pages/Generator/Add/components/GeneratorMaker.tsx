@@ -1,8 +1,8 @@
 import FileUploader from '@/components/FileUploader';
-import { makeGeneratorUsingPost } from '@/services/backend/generatorController';
-import { ProForm, ProFormItem } from '@ant-design/pro-form';
-import { Collapse, Form, message } from 'antd';
-import { saveAs } from 'file-saver';
+import {makeGeneratorUsingPost} from '@/services/backend/generatorController';
+import {ProForm, ProFormItem} from '@ant-design/pro-form';
+import {Collapse, Form, message} from 'antd';
+import {saveAs} from 'file-saver';
 
 interface Props {
   meta: API.GeneratorAddRequest | API.GeneratorEditRequest;
@@ -13,7 +13,7 @@ interface Props {
  * @param props
  */
 export default (props: Props) => {
-  const { meta } = props;
+  const {meta} = props;
   const [form] = Form.useForm();
 
   /**

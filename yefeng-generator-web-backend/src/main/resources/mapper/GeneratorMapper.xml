@@ -3,8 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yefeng.web.mapper.GeneratorMapper">
-
-    <resultMap id="BaseResultMap" type="generator.domain.Generator">
+    <resultMap id="BaseResultMap" type="com.yefeng.web.model.entity.Generator">
         <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="name" column="name" jdbcType="VARCHAR"/>
         <result property="description" column="description" jdbcType="VARCHAR"/>

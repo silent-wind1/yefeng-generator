@@ -1,24 +1,18 @@
 import FileUploader from '@/components/FileUploader';
 import PictureUploader from '@/components/PictureUploader';
-import { COS_HOST } from '@/constants';
+import {COS_HOST} from '@/constants';
 import {
   addGeneratorUsingPost,
   editGeneratorUsingPost,
   getGeneratorVoByIdUsingGet,
 } from '@/services/backend/generatorController';
-import { useSearchParams } from '@@/exports';
-import type { ProFormInstance } from '@ant-design/pro-components';
-import {
-  ProCard,
-  ProFormSelect,
-  ProFormText,
-  ProFormTextArea,
-  StepsForm,
-} from '@ant-design/pro-components';
-import { ProFormItem } from '@ant-design/pro-form';
-import { history } from '@umijs/max';
-import { message, UploadFile } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import {useSearchParams} from '@@/exports';
+import type {ProFormInstance} from '@ant-design/pro-components';
+import {ProCard, ProFormSelect, ProFormText, ProFormTextArea, StepsForm,} from '@ant-design/pro-components';
+import {ProFormItem} from '@ant-design/pro-form';
+import {history} from '@umijs/max';
+import {message, UploadFile} from 'antd';
+import React, {useEffect, useRef, useState} from 'react';
 import ModelConfigForm from "@/pages/Generator/Add/components/ModelConfigForm";
 import FileConfigForm from "@/pages/Generator/Add/components/FileConfigForm";
 import GeneratorMaker from "@/pages/Generator/Add/components/GeneratorMaker";

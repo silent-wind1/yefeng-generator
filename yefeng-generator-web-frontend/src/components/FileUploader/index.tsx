@@ -1,8 +1,8 @@
-import { uploadFileUsingPost } from '@/services/backend/fileController';
-import { InboxOutlined } from '@ant-design/icons';
-import { message, UploadFile, UploadProps } from 'antd';
+import {uploadFileUsingPost} from '@/services/backend/fileController';
+import {InboxOutlined} from '@ant-design/icons';
+import {message, UploadFile, UploadProps} from 'antd';
 import Dragger from 'antd/es/upload/Dragger';
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 
 interface Props {
   biz: string;

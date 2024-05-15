@@ -1,26 +1,10 @@
-import {
-  getGeneratorVoByIdUsingGet,
-  useGeneratorUsingPost,
-} from '@/services/backend/generatorController';
-import { Link, useModel, useParams } from '@@/exports';
+import {getGeneratorVoByIdUsingGet, useGeneratorUsingPost,} from '@/services/backend/generatorController';
+import {Link, useModel, useParams} from '@@/exports';
 import {CreditCardOutlined, DownloadOutlined} from '@ant-design/icons';
-import { PageContainer } from '@ant-design/pro-components';
-import {
-  Button,
-  Card,
-  Col,
-  Collapse,
-  Form,
-  Image,
-  Input,
-  message, Radio,
-  Row,
-  Space,
-  Tag,
-  Typography,
-} from 'antd';
-import { saveAs } from 'file-saver';
-import React, { useEffect, useState } from 'react';
+import {PageContainer} from '@ant-design/pro-components';
+import {Button, Card, Col, Collapse, Form, Image, Input, message, Radio, Row, Space, Tag, Typography,} from 'antd';
+import {saveAs} from 'file-saver';
+import React, {useEffect, useState} from 'react';
 
 /**
  * 生成器使用

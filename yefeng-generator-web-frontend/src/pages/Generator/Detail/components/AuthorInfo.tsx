@@ -1,4 +1,4 @@
-import { Avatar, Card } from 'antd';
+import {Avatar, Card} from 'antd';
 import React from 'react';
 
 interface Props {
