@@ -1,6 +1,7 @@
 package com.yefeng.web.controller;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
@@ -16,13 +17,11 @@ import com.yefeng.maker.generator.main.ZipGenerator;
 import com.yefeng.maker.meta.Meta;
 import com.yefeng.maker.meta.MetaValidator;
 import com.yefeng.web.annotation.AuthCheck;
-import com.yefeng.web.common.BaseResponse;
-import com.yefeng.web.common.DeleteRequest;
-import com.yefeng.web.common.ErrorCode;
-import com.yefeng.web.common.ResultUtils;
+import com.yefeng.web.common.*;
 import com.yefeng.web.constant.UserConstant;
 import com.yefeng.web.exception.BusinessException;
 import com.yefeng.web.exception.ThrowUtils;
+import com.yefeng.web.manager.CacheManager;
 import com.yefeng.web.manager.CosManager;
 import com.yefeng.web.model.dto.generator.*;
 import com.yefeng.web.model.entity.Generator;
@@ -63,12 +62,15 @@ public class GeneratorController {
     @Resource
     private CosManager cosManager;
 
+    @Resource
+    private CacheManager cacheManager;
+
     /**
      * 创建
      *
-     * @param generatorAddRequest
-     * @param request
-     * @return
+     * @param generatorAddRequest 生成器添加请求
+     * @param request             请求
+     * @return 结果
      */
     @PostMapping("/add")
     public BaseResponse<Long> addGenerator(@RequestBody GeneratorAddRequest generatorAddRequest, HttpServletRequest request) {
@@ -93,9 +95,9 @@ public class GeneratorController {
     /**
      * 删除
      *
-     * @param deleteRequest
-     * @param request
-     * @return
+     * @param deleteRequest 删除请求
+     * @param request       请求
+     * @return 结果
      */
     @PostMapping("/delete")
     public BaseResponse<Boolean> deleteGenerator(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
@@ -118,8 +120,8 @@ public class GeneratorController {
     /**
      * 更新（仅管理员）
      *
-     * @param generatorUpdateRequest
-     * @return
+     * @param generatorUpdateRequest 生成器修改请求
+     * @return 结果
      */
     @PostMapping("/update")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
@@ -145,8 +147,8 @@ public class GeneratorController {
     /**
      * 根据 id 获取
      *
-     * @param id
-     * @return
+     * @param id id
+     * @return 返回查询结果
      */
     @GetMapping("/get/vo")
     public BaseResponse<GeneratorVO> getGeneratorVOById(long id, HttpServletRequest request) {
@@ -163,8 +165,8 @@ public class GeneratorController {
     /**
      * 分页获取列表（仅管理员）
      *
-     * @param generatorQueryRequest
-     * @return
+     * @param generatorQueryRequest 生成器查询请求
+     * @return 返回查询结果
      */
     @PostMapping("/list/page")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
@@ -179,9 +181,9 @@ public class GeneratorController {
     /**
      * 分页获取列表（封装类）
      *
-     * @param generatorQueryRequest
-     * @param request
-     * @return
+     * @param generatorQueryRequest 生成器查询请求
+     * @param request               请求
+     * @return 返回查询结果
      */
     @PostMapping("/list/page/vo")
     public BaseResponse<Page<GeneratorVO>> listGeneratorVOByPage(@RequestBody GeneratorQueryRequest generatorQueryRequest,
@@ -199,30 +201,41 @@ public class GeneratorController {
     /**
      * 快速分页获取列表（封装类）
      *
-     * @param generatorQueryRequest
-     * @param request
-     * @return
+     * @param generatorQueryRequest 生成器查询请求
+     * @param request               请求
+     * @return 返回查询结果
      */
     @PostMapping("/list/page/vo/fast")
     public BaseResponse<Page<GeneratorVO>> listGeneratorVOByPageFast(@RequestBody GeneratorQueryRequest generatorQueryRequest,
                                                                      HttpServletRequest request) {
         long current = generatorQueryRequest.getCurrent();
         long size = generatorQueryRequest.getPageSize();
+
+        // 优先从缓存获取
+        String key = RedisKeyCommon.getPageCacheKey(generatorQueryRequest);
+        Object values = cacheManager.get(key);
+        if (values != null) {
+            return ResultUtils.success((Page<GeneratorVO>) values);
+        }
+
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
         QueryWrapper<Generator> queryWrapper = generatorService.getQueryWrapper(generatorQueryRequest);
-        queryWrapper.select("id","name","description","tags","picture","status","userId","createTime","updateTime");
+        queryWrapper.select("id", "name", "description", "tags", "picture", "status", "userId", "createTime", "updateTime");
         Page<Generator> generatorPage = generatorService.page(new Page<>(current, size), queryWrapper);
         Page<GeneratorVO> generatorVOPage = generatorService.getGeneratorVOPage(generatorPage, request);
+
+        // 写入缓存并设置过期时间
+        cacheManager.put(key, generatorVOPage);
         return ResultUtils.success(generatorVOPage);
     }
 
     /**
      * 分页获取当前用户创建的资源列表
      *
-     * @param generatorQueryRequest
-     * @param request
-     * @return
+     * @param generatorQueryRequest 生成器查询请求
+     * @param request               请求
+     * @return 返回查询结果
      */
     @PostMapping("/my/list/page/vo")
     public BaseResponse<Page<GeneratorVO>> listMyGeneratorVOByPage(@RequestBody GeneratorQueryRequest generatorQueryRequest,
@@ -245,9 +258,9 @@ public class GeneratorController {
     /**
      * 编辑（用户）
      *
-     * @param generatorEditRequest
-     * @param request
-     * @return
+     * @param generatorEditRequest 生成器编辑请求
+     * @param request              请求
+     * @return 结果
      */
     @PostMapping("/edit")
     public BaseResponse<Boolean> editGenerator(@RequestBody GeneratorEditRequest generatorEditRequest, HttpServletRequest request) {
@@ -408,7 +421,7 @@ public class GeneratorController {
             Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwxrwxrwx");
             Files.setPosixFilePermissions(scriptFile.toPath(), permissions);
         } catch (Exception e) {
-
+            log.error("exception error = ", e);
         }
 
         // 构造命令
@@ -436,13 +449,13 @@ public class GeneratorController {
             int exitCode = process.waitFor();
             System.out.println("命令执行结束，退出码：" + exitCode);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("exception error = ", e);
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "执行生成器脚本错误");
         }
 
         // 压缩得到的生成结果，返回给前端
         String generatedPath = scriptDir.getAbsolutePath() + "/generated";
-        if(!FileUtil.exist(generatedPath)) {
+        if (!FileUtil.exist(generatedPath)) {
             FileUtil.touch(generatedPath);
         }
         String resultPath = tempDirPath + "/result.zip";
@@ -462,10 +475,9 @@ public class GeneratorController {
     /**
      * 制作代码生成器
      *
-     * @param generatorMakeRequest
-     * @param request
-     * @param response
-     * @throws IOException
+     * @param generatorMakeRequest 生成器制作请求
+     * @param request              请求
+     * @param response             响应
      */
     @PostMapping("/make")
     public void makeGenerator(@RequestBody GeneratorMakeRequest generatorMakeRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -475,7 +487,7 @@ public class GeneratorController {
         Meta meta = generatorMakeRequest.getMeta();
 
         // 需要用户登录
-        User loginUser = userService.getLoginUser(request);
+        userService.getLoginUser(request);
 
         // 创建独立工作空间，下载压缩包到本地文件
         if (StrUtil.isBlank(zipFilePath)) {
@@ -516,7 +528,7 @@ public class GeneratorController {
         try {
             generateTemplate.doGenerate(meta, outputPath);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.info("exception error", e);
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "制作失败");
         }
         // 下载压缩的产物包文件
@@ -540,8 +552,8 @@ public class GeneratorController {
     /**
      * 缓存代码生成器
      *
-     * @param generatorCacheRequest
-     * @param response
+     * @param generatorCacheRequest 生成器缓存请求
+     * @param response              响应
      */
     @PostMapping("/cache")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
@@ -581,11 +593,11 @@ public class GeneratorController {
     /**
      * 获取缓存存储路径
      *
-     * @param id
-     * @param distPath
-     * @return
+     * @param id       id
+     * @param distPath 文件路径
+     * @return 拼接好的路径
      */
-    public String getCacheFilePath(long id, String distPath) {
+    private String getCacheFilePath(long id, String distPath) {
         String projectPath = System.getProperty("user.dir");
         String tempDirPath = String.format("%s/.temp/cache/%s", projectPath, id);
         return String.format("%s/%s", tempDirPath, distPath);

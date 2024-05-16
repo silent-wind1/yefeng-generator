@@ -3,11 +3,12 @@ package com.yefeng.maker.meta;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.List;
 
 @NoArgsConstructor
 @Data
-public class Meta {
+public class Meta implements Serializable {
 
     private String name;
     private String description;
@@ -20,7 +21,7 @@ public class Meta {
 
     @NoArgsConstructor
     @Data
-    public static class FileConfig {
+    public static class FileConfig implements Serializable {
         private String sourceRootPath;
         private String inputRootPath;
         private String outputRootPath;
@@ -43,7 +44,7 @@ public class Meta {
 
     @NoArgsConstructor
     @Data
-    public static class ModelConfig {
+    public static class ModelConfig implements Serializable {
         private List<ModelInfo> models;
 
         @NoArgsConstructor
