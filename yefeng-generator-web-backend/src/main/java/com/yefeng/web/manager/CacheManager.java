@@ -3,7 +3,6 @@ package com.yefeng.web.manager;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -19,9 +18,9 @@ public class CacheManager {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
-    // 本地缓存
+    // 本地缓存,设置过期15分钟
     Cache<String, Object> localCache = Caffeine.newBuilder()
-            .expireAfterWrite(100, TimeUnit.MINUTES)
+            .expireAfterWrite(15, TimeUnit.MINUTES)
             .maximumSize(10_000)
             .build();
 
@@ -33,7 +32,7 @@ public class CacheManager {
      */
     public void put(String key, Object value) {
         localCache.put(key, value);
-        redisTemplate.opsForValue().set(key, value, 100, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set(key, value, 15, TimeUnit.MINUTES);
     }
 
     /**

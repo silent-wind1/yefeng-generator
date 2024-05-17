@@ -1,7 +1,6 @@
 package com.yefeng.web.controller;
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
@@ -129,11 +128,12 @@ public class GeneratorController {
         if (generatorUpdateRequest == null || generatorUpdateRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        Generator generator = new Generator();
-        BeanUtils.copyProperties(generatorUpdateRequest, generator);
-        generator.setTags(JSONUtil.toJsonStr(generatorUpdateRequest.getTags()));
-        generator.setFileConfig(JSONUtil.toJsonStr(generatorUpdateRequest.getFileConfig()));
-        generator.setModelConfig(JSONUtil.toJsonStr(generatorUpdateRequest.getModelConfig()));
+//        Generator generator = new Generator();
+//        BeanUtils.copyProperties(generatorUpdateRequest, generator);
+//        generator.setTags(JSONUtil.toJsonStr(generatorUpdateRequest.getTags()));
+//        generator.setFileConfig(JSONUtil.toJsonStr(generatorUpdateRequest.getFileConfig()));
+//        generator.setModelConfig(JSONUtil.toJsonStr(generatorUpdateRequest.getModelConfig()));
+        Generator generator = getGenerator(generatorUpdateRequest);
         // 参数校验
         generatorService.validGenerator(generator, false);
         long id = generatorUpdateRequest.getId();
@@ -173,8 +173,7 @@ public class GeneratorController {
     public BaseResponse<Page<Generator>> listGeneratorByPage(@RequestBody GeneratorQueryRequest generatorQueryRequest) {
         long current = generatorQueryRequest.getCurrent();
         long size = generatorQueryRequest.getPageSize();
-        Page<Generator> generatorPage = generatorService.page(new Page<>(current, size),
-                generatorService.getQueryWrapper(generatorQueryRequest));
+        Page<Generator> generatorPage = generatorService.page(new Page<>(current, size), generatorService.getQueryWrapper(generatorQueryRequest));
         return ResultUtils.success(generatorPage);
     }
 
@@ -186,14 +185,12 @@ public class GeneratorController {
      * @return 返回查询结果
      */
     @PostMapping("/list/page/vo")
-    public BaseResponse<Page<GeneratorVO>> listGeneratorVOByPage(@RequestBody GeneratorQueryRequest generatorQueryRequest,
-                                                                 HttpServletRequest request) {
+    public BaseResponse<Page<GeneratorVO>> listGeneratorVOByPage(@RequestBody GeneratorQueryRequest generatorQueryRequest, HttpServletRequest request) {
         long current = generatorQueryRequest.getCurrent();
         long size = generatorQueryRequest.getPageSize();
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-        Page<Generator> generatorPage = generatorService.page(new Page<>(current, size),
-                generatorService.getQueryWrapper(generatorQueryRequest));
+        Page<Generator> generatorPage = generatorService.page(new Page<>(current, size), generatorService.getQueryWrapper(generatorQueryRequest));
         return ResultUtils.success(generatorService.getGeneratorVOPage(generatorPage, request));
     }
 
@@ -206,8 +203,7 @@ public class GeneratorController {
      * @return 返回查询结果
      */
     @PostMapping("/list/page/vo/fast")
-    public BaseResponse<Page<GeneratorVO>> listGeneratorVOByPageFast(@RequestBody GeneratorQueryRequest generatorQueryRequest,
-                                                                     HttpServletRequest request) {
+    public BaseResponse<Page<GeneratorVO>> listGeneratorVOByPageFast(@RequestBody GeneratorQueryRequest generatorQueryRequest, HttpServletRequest request) {
         long current = generatorQueryRequest.getCurrent();
         long size = generatorQueryRequest.getPageSize();
 
@@ -238,8 +234,7 @@ public class GeneratorController {
      * @return 返回查询结果
      */
     @PostMapping("/my/list/page/vo")
-    public BaseResponse<Page<GeneratorVO>> listMyGeneratorVOByPage(@RequestBody GeneratorQueryRequest generatorQueryRequest,
-                                                                   HttpServletRequest request) {
+    public BaseResponse<Page<GeneratorVO>> listMyGeneratorVOByPage(@RequestBody GeneratorQueryRequest generatorQueryRequest, HttpServletRequest request) {
         if (generatorQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -249,8 +244,7 @@ public class GeneratorController {
         long size = generatorQueryRequest.getPageSize();
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-        Page<Generator> generatorPage = generatorService.page(new Page<>(current, size),
-                generatorService.getQueryWrapper(generatorQueryRequest));
+        Page<Generator> generatorPage = generatorService.page(new Page<>(current, size), generatorService.getQueryWrapper(generatorQueryRequest));
         return ResultUtils.success(generatorService.getGeneratorVOPage(generatorPage, request));
     }
 
@@ -264,14 +258,16 @@ public class GeneratorController {
      */
     @PostMapping("/edit")
     public BaseResponse<Boolean> editGenerator(@RequestBody GeneratorEditRequest generatorEditRequest, HttpServletRequest request) {
+        // 之前的校验逻辑
         if (generatorEditRequest == null || generatorEditRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        Generator generator = new Generator();
-        BeanUtils.copyProperties(generatorEditRequest, generator);
-        generator.setTags(JSONUtil.toJsonStr(generatorEditRequest.getTags()));
-        generator.setFileConfig(JSONUtil.toJsonStr(generatorEditRequest.getFileConfig()));
-        generator.setModelConfig(JSONUtil.toJsonStr(generatorEditRequest.getModelConfig()));
+//        Generator generator = new Generator();
+//        BeanUtils.copyProperties(generatorEditRequest, generator);
+//        generator.setTags(JSONUtil.toJsonStr(generatorEditRequest.getTags()));
+//        generator.setFileConfig(JSONUtil.toJsonStr(generatorEditRequest.getFileConfig()));
+//        generator.setModelConfig(JSONUtil.toJsonStr(generatorEditRequest.getModelConfig()));
+        Generator generator = getGenerator(generatorEditRequest);
         // 参数校验
         generatorService.validGenerator(generator, false);
         User loginUser = userService.getLoginUser(request);
@@ -409,12 +405,7 @@ public class GeneratorController {
         // 执行脚本
         // 找到脚本文件所在路径
         // 要注意，如果不是 windows 系统，找 generator 文件而不是 bat
-        File scriptFile = FileUtil.loopFiles(unzipDistDir, 2, null)
-                .stream()
-                .filter(file -> file.isFile()
-                        && "generator.bat".equals(file.getName()))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
+        File scriptFile = FileUtil.loopFiles(unzipDistDir, 2, null).stream().filter(file -> file.isFile() && "generator.bat".equals(file.getName())).findFirst().orElseThrow(RuntimeException::new);
 
         // 添加可执行权限
         try {
@@ -601,5 +592,54 @@ public class GeneratorController {
         String projectPath = System.getProperty("user.dir");
         String tempDirPath = String.format("%s/.temp/cache/%s", projectPath, id);
         return String.format("%s/%s", tempDirPath, distPath);
+    }
+
+    /**
+     * 得到getGenerator
+     *
+     * @param GeneratorRequest 请求修改类型
+     * @param <E>              GeneratorEditRequest ||  GeneratorUpdateRequest
+     * @return Generator
+     */
+    private <E> Generator getGenerator(E GeneratorRequest) {
+        Generator generator = new Generator();
+        if (GeneratorRequest instanceof GeneratorEditRequest) {
+            GeneratorEditRequest general = (GeneratorEditRequest) GeneratorRequest;
+            BeanUtils.copyProperties(general, generator);
+        } else if (GeneratorRequest instanceof GeneratorUpdateRequest) {
+            GeneratorUpdateRequest general = (GeneratorUpdateRequest) GeneratorRequest;
+            BeanUtils.copyProperties(general, generator);
+        } else {
+            log.info("校验类型不是 GeneratorEditRequest 或者 GeneratorUpdateRequest");
+            throw new BusinessException(ErrorCode.OPERATION_ERROR);
+        }
+        generator.setTags(JSONUtil.toJsonStr(generator.getTags()));
+        generator.setFileConfig(JSONUtil.toJsonStr(generator.getFileConfig()));
+        generator.setModelConfig(JSONUtil.toJsonStr(generator.getModelConfig()));
+        return generator;
+    }
+
+    /**
+     * 利用反射获取id进行校验
+     *
+     * @param GeneratorRequest 请求修改类型
+     * @param <E>              GeneratorEditRequest ||  GeneratorUpdateRequest
+     * @return Generator
+     */
+    private <E> Generator getGeneratorReflect(E GeneratorRequest) {
+        Generator generator = new Generator();
+        try {
+            Long id = (Long) GeneratorRequest.getClass().getMethod("getId").invoke(GeneratorRequest);
+            if (id <= 0) {
+                throw new BusinessException(ErrorCode.PARAMS_ERROR);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        BeanUtils.copyProperties(GeneratorRequest, generator);
+        generator.setTags(JSONUtil.toJsonStr(generator.getTags()));
+        generator.setFileConfig(JSONUtil.toJsonStr(generator.getFileConfig()));
+        generator.setModelConfig(JSONUtil.toJsonStr(generator.getModelConfig()));
+        return generator;
     }
 }
