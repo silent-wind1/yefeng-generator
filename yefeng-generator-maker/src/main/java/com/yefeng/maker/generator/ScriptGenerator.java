@@ -20,6 +20,7 @@ public class ScriptGenerator {
 
     public static void doGenerate(String outputPath, String jarPath) {
         StringBuilder builder = new StringBuilder();
+        // Linux
 //        builder.append("#!/bin/bash").append("\n");
 //        builder.append(String.format("java -jar %s \"$@\"", jarPath)).append("\n");
 //        FileUtil.writeBytes(builder.toString().getBytes(StandardCharsets.UTF_8), outputPath);

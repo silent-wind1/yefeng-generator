@@ -1,7 +1,6 @@
 package com.yefeng.maker.generator.main;
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.resource.ClassPathResource;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
 import com.yefeng.maker.generator.JarGenerator;
