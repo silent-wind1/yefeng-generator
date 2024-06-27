@@ -2,8 +2,7 @@ package com.yefeng.web.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONUtil;
-import com.yefeng.web.common.BaseResponse;
-import com.yefeng.web.common.ResultUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yefeng.web.model.dto.generator.GeneratorQueryRequest;
 import com.yefeng.web.model.entity.Generator;
 import com.yefeng.web.model.es.GeneratorES;
@@ -68,7 +67,11 @@ public class SearchServiceImpl {
         }
     }
 
-    public BaseResponse<List<GeneratorES>> SearchGenerator(@RequestBody GeneratorQueryRequest generatorQueryRequest) throws IOException {
+    public Page<GeneratorES> SearchGenerator(@RequestBody GeneratorQueryRequest generatorQueryRequest) throws IOException {
+
+        int current = generatorQueryRequest.getCurrent();
+        int size = generatorQueryRequest.getPageSize();
+
         // 设置查询条件
         SearchRequest request = new SearchRequest("generator");
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
@@ -85,16 +88,21 @@ public class SearchServiceImpl {
         );
         // 添加查询条件
         request.source().query(boolQuery);
+        //设置分页
+        request.source().from((current - 1) * size).size(size);
+        Page<GeneratorES> page = new Page<>(current, size);
         // 3.发送请求
         SearchResponse response = highLevelClient.search(request, RequestOptions.DEFAULT);
-        List<GeneratorES> listBaseResponse = basicQuery(response);
-        return ResultUtils.success(listBaseResponse);
+        Page<GeneratorES> listBaseResponse = basicQuery(response, page);
+        return listBaseResponse;
     }
 
-    private List<GeneratorES> basicQuery(SearchResponse response) {
+    private Page<GeneratorES> basicQuery(SearchResponse response, Page<GeneratorES> page) {
+        log.info("response = {}", response);
         List<GeneratorES> list = new ArrayList<>();
         SearchHits searchHits = response.getHits();
         long total = searchHits.getTotalHits().value;
+        page.setTotal(total);
         if (total == 0) {
             return null;
         }
@@ -102,7 +110,7 @@ public class SearchServiceImpl {
         for (SearchHit hit : hits) {
             // 3.得到_source，也就是原始json文档
             String source = hit.getSourceAsString();
-//            log.info("source = {}", source);
+            log.info("source = {}", source);
             // 4.反序列化并打印
             GeneratorES item = JSONUtil.toBean(source, GeneratorES.class);
             // 获取高亮结果
@@ -116,7 +124,8 @@ public class SearchServiceImpl {
             }
             list.add(item);
         }
-        return list;
+        page.setRecords(list);
+        return page;
     }
 }
 

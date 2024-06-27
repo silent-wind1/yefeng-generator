@@ -1,6 +1,6 @@
 package com.yefeng.web.controller;
 
-import com.yefeng.web.common.BaseResponse;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yefeng.web.model.dto.generator.GeneratorQueryRequest;
 import com.yefeng.web.model.es.GeneratorES;
 import com.yefeng.web.service.impl.SearchServiceImpl;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * @Author: 叶枫
@@ -24,8 +23,8 @@ import java.util.List;
 public class SearchController {
     private final SearchServiceImpl searchService;
 
-    @PostMapping("/names")
-    public BaseResponse<List<GeneratorES>> SearchGenerator(@RequestBody GeneratorQueryRequest generatorQueryRequest) throws IOException {
+    @PostMapping("/list/page/vo")
+    public Page<GeneratorES> SearchGenerator(@RequestBody GeneratorQueryRequest generatorQueryRequest) throws IOException {
         return searchService.SearchGenerator(generatorQueryRequest);
     }
 }
