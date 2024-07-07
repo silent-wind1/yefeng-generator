@@ -1,6 +1,7 @@
 package com.yefeng.web.controller;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.crypto.digest.DigestUtil;
 import com.qcloud.cos.model.COSObject;
 import com.qcloud.cos.model.COSObjectInputStream;
 import com.qcloud.cos.utils.IOUtils;
@@ -17,6 +18,7 @@ import com.yefeng.web.model.enums.FileUploadBizEnum;
 import com.yefeng.web.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 文件接口
@@ -41,6 +44,8 @@ public class FileController {
     @Resource
     private CosManager cosManager;
 
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     /**
      * 测试文件上传
@@ -82,7 +87,16 @@ public class FileController {
      */
     @PostMapping("/upload")
     public BaseResponse<String> uploadFile(@RequestPart("file") MultipartFile multipartFile,
-                                           UploadFileRequest uploadFileRequest, HttpServletRequest request) {
+                                           UploadFileRequest uploadFileRequest, HttpServletRequest request) throws IOException {
+        // 计算上传图片的MD5值
+        String md5 = calculateMD5(multipartFile);
+        // 检查Redis中是否存在该MD5值
+        String existingFile = stringRedisTemplate.opsForValue().get(md5);
+        if (existingFile != null) {
+            log.info("这个文件已经上传过了，无需重复上传");
+            // 返回可访问地址
+            return ResultUtils.success(existingFile);
+        }
         String biz = uploadFileRequest.getBiz();
         FileUploadBizEnum fileUploadBizEnum = FileUploadBizEnum.getEnumByValue(biz);
         if (fileUploadBizEnum == null) {
@@ -100,6 +114,8 @@ public class FileController {
             file = File.createTempFile(filepath, null);
             multipartFile.transferTo(file);
             cosManager.putObject(filepath, file);
+            // 将文件路径存入Redis当中
+            stringRedisTemplate.opsForValue().set(md5, filepath, 3000L, TimeUnit.SECONDS);
             // 返回可访问地址
             return ResultUtils.success(filepath);
         } catch (Exception e) {
@@ -167,5 +183,17 @@ public class FileController {
                 throw new BusinessException(ErrorCode.PARAMS_ERROR, "文件类型错误");
             }
         }
+    }
+
+    /**
+     * 计算 MD 5
+     *
+     * @param file
+     * @return
+     * @throws IOException
+     */
+    private String calculateMD5(MultipartFile file) throws IOException {
+        byte[] bytes = file.getBytes();
+        return DigestUtil.md5Hex(bytes);
     }
 }
