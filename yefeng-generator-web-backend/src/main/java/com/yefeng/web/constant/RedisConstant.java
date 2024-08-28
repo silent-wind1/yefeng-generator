@@ -7,4 +7,6 @@ package com.yefeng.web.constant;
  */
 public interface RedisConstant {
     String File_MD5_KEY = "file:md5:";
+
+    String WECHAT_LOGIN_CODE = "wechat:login:code:";
 }

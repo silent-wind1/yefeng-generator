@@ -35,4 +35,5 @@ class GeneratorServiceTest {
         List<Generator> list = generatorService.list();
         searchService.importIndex(list);
     }
+
 }

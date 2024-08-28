@@ -1,11 +1,14 @@
 package com.yefeng.web.controller;
 
+import cn.hutool.core.text.CharSequenceUtil;
+import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yefeng.web.annotation.AuthCheck;
 import com.yefeng.web.common.BaseResponse;
 import com.yefeng.web.common.DeleteRequest;
 import com.yefeng.web.common.ErrorCode;
 import com.yefeng.web.common.ResultUtils;
+import com.yefeng.web.constant.RedisConstant;
 import com.yefeng.web.constant.UserConstant;
 import com.yefeng.web.exception.BusinessException;
 import com.yefeng.web.exception.ThrowUtils;
@@ -15,16 +18,28 @@ import com.yefeng.web.model.vo.LoginUserVO;
 import com.yefeng.web.model.vo.UserVO;
 import com.yefeng.web.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.api.WxConsts;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
+import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import static cn.hutool.crypto.SecureUtil.sha1;
 import static com.yefeng.web.service.impl.UserServiceImpl.SALT;
+import static net.sf.jsqlparser.util.validation.metadata.MetadataContext.exists;
 
 /**
  * 用户接口
@@ -37,6 +52,11 @@ public class UserController {
     @Resource
     private UserService userService;
 
+    @Resource
+    private WxMpService wxMpService;
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
     // region 登录相关
 
     /**
@@ -271,5 +291,19 @@ public class UserController {
         boolean result = userService.updateById(user);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         return ResultUtils.success(true);
+    }
+
+    @PostMapping("/getLoginQrCode")
+    public BaseResponse<List<String>> getWxLoginQrCode() throws WxErrorException {
+        // 设置场景id，登录的时候需要根据这个获取redis中存在的openid
+        String sceneStr = IdUtil.getSnowflake().nextIdStr();
+        WxMpQrCodeTicket wxMpQrCodeTicket = wxMpService.getQrcodeService().qrCodeCreateTmpTicket(sceneStr, 3600);
+        // 这里获取到的是二维码，前端只需要用<img>标签中的src接收就可以展示
+        String code = wxMpService.getQrcodeService().qrCodePictureUrl(wxMpQrCodeTicket.getTicket());
+        List<String> list = new ArrayList<>(2);
+        list.add(sceneStr);
+        list.add(code);
+        stringRedisTemplate.opsForValue().set(RedisConstant.WECHAT_LOGIN_CODE + sceneStr, sceneStr);
+        return ResultUtils.success(list);
     }
 }
