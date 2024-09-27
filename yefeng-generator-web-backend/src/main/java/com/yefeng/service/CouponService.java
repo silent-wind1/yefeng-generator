@@ -9,6 +9,7 @@ package com.yefeng.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.yefeng.model.dto.coupon.CouponFormDTO;
 import com.yefeng.model.entity.Coupons;
+import com.yefeng.model.vo.CouponDetailVO;
 
 import javax.validation.Valid;
 
@@ -17,4 +18,8 @@ public interface CouponService extends IService<Coupons> {
     void saveCoupon(CouponFormDTO couponFormDTO);
 
     void updateById(@Valid CouponFormDTO dto, Long id);
+
+    void deleteById(Long id);
+
+    CouponDetailVO queryById(Long id);
 }

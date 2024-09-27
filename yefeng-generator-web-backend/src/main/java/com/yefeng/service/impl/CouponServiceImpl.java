@@ -9,6 +9,7 @@ import com.yefeng.mapper.CouponMapper;
 import com.yefeng.model.dto.coupon.CouponFormDTO;
 import com.yefeng.model.entity.CouponScope;
 import com.yefeng.model.entity.Coupons;
+import com.yefeng.model.vo.CouponDetailVO;
 import com.yefeng.service.CouponScopeService;
 import com.yefeng.service.CouponService;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +54,7 @@ public class CouponServiceImpl extends ServiceImpl<CouponMapper, Coupons> implem
         Long dtoId = dto.getId();
         //如果dto的id和路径id都存在但id不一致，或者都不存在，则抛出异常
         if((dtoId!=null && id!=null && !dtoId.equals(id)) || (dtoId==null&&id==null)){
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "分类id不能为空");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         //2.更新优惠券基本信息
         Coupons coupon = BeanUtil.copyProperties(dto, Coupons.class);
@@ -75,5 +76,26 @@ public class CouponServiceImpl extends ServiceImpl<CouponMapper, Coupons> implem
             List<CouponScope> lis = scopeIds.stream().map(i -> new CouponScope().setCouponId(dto.getId()).setType(1).setBizId(i)).collect(Collectors.toList());
             scopeService.saveBatch(lis);
         }
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        //1.查询优惠券是否存在并删除
+        boolean remove = lambdaUpdate()
+                .eq(Coupons::getId, id)
+                .eq(Coupons::getStatus, 1)
+                .remove();
+        if(!remove){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "删除失败，当前优惠券状态非待发放状态");
+        }
+        //2.查询优惠券范围信息并删除
+        scopeService.lambdaUpdate()
+                .eq(CouponScope::getCouponId, id)
+                .remove();
+    }
+
+    @Override
+    public CouponDetailVO queryById(Long id) {
+        return null;
     }
 }

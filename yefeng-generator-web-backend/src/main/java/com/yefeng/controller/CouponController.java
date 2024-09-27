@@ -1,9 +1,11 @@
 package com.yefeng.controller;
 
 import com.yefeng.model.dto.coupon.CouponFormDTO;
+import com.yefeng.model.vo.CouponDetailVO;
 import com.yefeng.service.CouponService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,5 +34,17 @@ public class CouponController {
     @PutMapping("{id}")
     public void updateById(@RequestBody @Valid CouponFormDTO dto, @PathVariable("id") Long id){
         couponService.updateById(dto, id);
+    }
+
+    @ApiOperation("删除优惠券接口")
+    @DeleteMapping("{id}")
+    public void deleteById(@ApiParam("优惠券id") @PathVariable("id") Long id){
+        couponService.deleteById(id);
+    }
+
+    @ApiOperation("查询优惠券接口")
+    @GetMapping("{id}")
+    public CouponDetailVO queryById(@ApiParam("优惠券id") @PathVariable("id") Long id){
+        return couponService.queryById(id);
     }
 }
