@@ -5,19 +5,19 @@ import cn.hutool.crypto.digest.DigestUtil;
 import com.qcloud.cos.model.COSObject;
 import com.qcloud.cos.model.COSObjectInputStream;
 import com.qcloud.cos.utils.IOUtils;
-import com.yefeng.web.annotation.AuthCheck;
-import com.yefeng.web.common.BaseResponse;
-import com.yefeng.web.common.ErrorCode;
-import com.yefeng.web.common.ResultUtils;
-import com.yefeng.web.constant.FileConstant;
-import com.yefeng.web.constant.RedisConstant;
-import com.yefeng.web.constant.UserConstant;
-import com.yefeng.web.exception.BusinessException;
-import com.yefeng.web.manager.CosManager;
-import com.yefeng.web.model.dto.file.UploadFileRequest;
-import com.yefeng.web.model.entity.User;
-import com.yefeng.web.model.enums.FileUploadBizEnum;
-import com.yefeng.web.service.UserService;
+import com.yefeng.annotation.AuthCheck;
+import com.yefeng.common.BaseResponse;
+import com.yefeng.common.ErrorCode;
+import com.yefeng.common.ResultUtils;
+import com.yefeng.constant.FileConstant;
+import com.yefeng.constant.*;
+import com.yefeng.constant.UserConstant;
+import com.yefeng.exception.BusinessException;
+import com.yefeng.manager.CosManager;
+import com.yefeng.model.dto.file.UploadFileRequest;
+import com.yefeng.model.entity.User;
+import com.yefeng.model.enums.FileUploadBizEnum;
+import com.yefeng.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -93,7 +93,7 @@ public class FileController {
         // 计算上传图片的MD5值
         String md5 = calculateMD5(multipartFile);
         // 检查Redis中是否存在该MD5值
-        String existingFile = stringRedisTemplate.opsForValue().get(RedisConstant.File_MD5_KEY + md5);
+        String existingFile = stringRedisTemplate.opsForValue().get(com.yefeng.web.constant.RedisConstant.File_MD5_KEY + md5);
         if (existingFile != null) {
             log.info("这个文件已经上传过了，无需重复上传");
             // 返回可访问地址
@@ -117,7 +117,7 @@ public class FileController {
             multipartFile.transferTo(file);
             cosManager.putObject(filepath, file);
             // 将文件路径存入Redis当中
-            stringRedisTemplate.opsForValue().set(RedisConstant.File_MD5_KEY + md5, filepath, 3000L, TimeUnit.SECONDS);
+            stringRedisTemplate.opsForValue().set(com.yefeng.web.constant.RedisConstant.File_MD5_KEY + md5, filepath, 3000L, TimeUnit.SECONDS);
             // 返回可访问地址
             return ResultUtils.success(filepath);
         } catch (Exception e) {
