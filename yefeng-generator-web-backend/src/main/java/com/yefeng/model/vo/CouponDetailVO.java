@@ -1,13 +1,16 @@
 package com.yefeng.model.vo;
 
-import com.alibaba.excel.annotation.format.DateTimeFormat;
+
 import com.yefeng.model.enums.DiscountType;
 import com.yefeng.model.enums.ObtainType;
+import com.yefeng.utils.DateUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @ApiModel(description = "优惠券详细数据")

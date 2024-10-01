@@ -1,7 +1,7 @@
 package com.yefeng.validate.annotations;
 
-import com.tianji.common.validate.EnumValidator;
-import com.tianji.common.validate.EnumValueValidator;
+import com.yefeng.validate.EnumValidator;
+import com.yefeng.validate.EnumValueValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

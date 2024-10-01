@@ -1,27 +1,23 @@
-package com.yefeng.web.controller;
+package com.yefeng.controller;
 
-import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.yefeng.web.annotation.AuthCheck;
-import com.yefeng.web.common.BaseResponse;
-import com.yefeng.web.common.DeleteRequest;
-import com.yefeng.web.common.ErrorCode;
-import com.yefeng.web.common.ResultUtils;
-import com.yefeng.web.constant.RedisConstant;
-import com.yefeng.web.constant.UserConstant;
-import com.yefeng.web.exception.BusinessException;
-import com.yefeng.web.exception.ThrowUtils;
-import com.yefeng.web.model.dto.user.*;
-import com.yefeng.web.model.entity.User;
-import com.yefeng.web.model.vo.LoginUserVO;
-import com.yefeng.web.model.vo.UserVO;
-import com.yefeng.web.service.UserService;
+import com.yefeng.annotation.AuthCheck;
+import com.yefeng.common.BaseResponse;
+import com.yefeng.common.DeleteRequest;
+import com.yefeng.common.ErrorCode;
+import com.yefeng.common.ResultUtils;
+import com.yefeng.constant.UserConstant;
+import com.yefeng.exception.BusinessException;
+import com.yefeng.exception.ThrowUtils;
+import com.yefeng.model.dto.user.*;
+import com.yefeng.model.entity.User;
+import com.yefeng.model.vo.LoginUserVO;
+import com.yefeng.model.vo.UserVO;
+import com.yefeng.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
-import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -31,15 +27,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static cn.hutool.crypto.SecureUtil.sha1;
-import static com.yefeng.web.service.impl.UserServiceImpl.SALT;
-import static net.sf.jsqlparser.util.validation.metadata.MetadataContext.exists;
+import static com.yefeng.service.impl.UserServiceImpl.SALT;
 
 /**
  * 用户接口
@@ -303,7 +294,7 @@ public class UserController {
         List<String> list = new ArrayList<>(2);
         list.add(sceneStr);
         list.add(code);
-        stringRedisTemplate.opsForValue().set(RedisConstant.WECHAT_LOGIN_CODE + sceneStr, sceneStr);
+        stringRedisTemplate.opsForValue().set(com.yefeng.web.constant.RedisConstant.WECHAT_LOGIN_CODE + sceneStr, sceneStr);
         return ResultUtils.success(list);
     }
 }

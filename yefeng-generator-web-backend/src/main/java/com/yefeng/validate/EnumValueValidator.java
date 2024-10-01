@@ -1,8 +1,8 @@
 package com.yefeng.validate;
 
-import com.tianji.common.utils.ArrayUtils;
-import com.tianji.common.validate.annotations.EnumValid;
+import com.yefeng.validate.annotations.EnumValid;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -19,7 +19,7 @@ public class EnumValueValidator implements ConstraintValidator<EnumValid, Intege
     @Override
     public void initialize(EnumValid enumValid) {
         this.enums = enumValid.enumeration();
-        log.info("payload>>{}",ArrayUtils.toString(enumValid.payload()));
+        log.info("payload>>{}", ArrayUtils.toString(enumValid.payload()));
     }
 
     @Override
