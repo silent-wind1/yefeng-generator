@@ -1,17 +1,20 @@
-import {COS_HOST} from '@/constants';
-import {testDownloadFileUsingGet, testUploadFileUsingPost} from '@/services/backend/fileController';
-import {InboxOutlined} from '@ant-design/icons';
-import {PageContainer} from '@ant-design/pro-components';
-import {Button, Card, Divider, Flex, message, Upload, UploadProps} from 'antd';
-import {saveAs} from 'file-saver';
-import React, {useState} from 'react';
+import { COS_HOST } from '@/constants';
+import {
+  testDownloadFileUsingGet,
+  testUploadFileUsingPost,
+} from '@/services/backend/fileController';
+import { InboxOutlined } from '@ant-design/icons';
+import { PageContainer } from '@ant-design/pro-components';
+import { Button, Card, Divider, Flex, message, Upload, UploadProps } from 'antd';
+import { saveAs } from 'file-saver';
+import React, { useState } from 'react';
 
-const {Dragger} = Upload;
+const { Dragger } = Upload;
 
 const TestFilePage: React.FC = () => {
   let [value, setValue] = useState<string>();
   if (value === undefined) {
-    value = ""
+    value = '';
   }
 
   const props: UploadProps = {
@@ -38,7 +41,7 @@ const TestFilePage: React.FC = () => {
         <Card title="文件上传">
           <Dragger {...props}>
             <p className="ant-upload-drag-icon">
-              <InboxOutlined/>
+              <InboxOutlined />
             </p>
             <p className="ant-upload-text">选择你要上传的文件</p>
             <p className="ant-upload-hint">
@@ -48,11 +51,11 @@ const TestFilePage: React.FC = () => {
         </Card>
         <Card title="文件下载">
           文件地址: {COS_HOST + value}
-          <Divider/>
+          <Divider />
           <Flex justify="center">
-            <img src={COS_HOST + value} alt="" height={200}/>
+            <img src={COS_HOST + value} alt="" height={200} />
           </Flex>
-          <Divider/>
+          <Divider />
           <Button
             onClick={async () => {
               const blob = await testDownloadFileUsingGet(

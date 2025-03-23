@@ -1,7 +1,7 @@
 import AuthorInfo from '@/pages/Generator/Detail/components/AuthorInfo';
 import FileConfig from '@/pages/Generator/Detail/components/FileConfig';
 import ModelConfig from '@/pages/Generator/Detail/components/ModelConfig';
-import {downloadGeneratorByIdUsingGet, getGeneratorVoByIdUsingGet} from '@/services/backend/generatorController';
+import {downloadGeneratorByIdUsingGet, getGeneratorVoByIdUsingGet,} from '@/services/backend/generatorController';
 import {Link, useModel, useParams} from '@@/exports';
 import {DownloadOutlined, EditOutlined} from '@ant-design/icons';
 import {PageContainer} from '@ant-design/pro-components';

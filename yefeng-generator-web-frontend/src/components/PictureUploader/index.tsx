@@ -1,8 +1,8 @@
-import {uploadFileUsingPost} from '@/services/backend/fileController';
-import {LoadingOutlined, PlusOutlined} from '@ant-design/icons';
-import {message, Upload, UploadProps} from 'antd';
-import React, {useState} from 'react';
-import {COS_HOST} from "@/constants";
+import { COS_HOST } from '@/constants';
+import { uploadFileUsingPost } from '@/services/backend/fileController';
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { message, Upload, UploadProps } from 'antd';
+import React, { useState } from 'react';
 
 interface Props {
   biz: string;

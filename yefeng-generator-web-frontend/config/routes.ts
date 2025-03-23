@@ -3,11 +3,11 @@ export default [
     path: '/user',
     layout: false,
     routes: [
-      {path: '/user/login', component: './User/Login'},
-      {path: '/user/register', component: './User/Register'},
+      { path: '/user/login', component: './User/Login' },
+      { path: '/user/register', component: './User/Register' },
     ],
   },
-  {path: '/', icon: 'home', component: './Index', name: '主页'},
+  { path: '/', icon: 'home', component: './Index', name: '主页' },
   {
     path: '/generator/detail/:id',
     icon: 'home',
@@ -33,7 +33,7 @@ export default [
     icon: 'plus',
     component: './Generator/Use',
     name: '使用生成器',
-    hideInMenu: true
+    hideInMenu: true,
   },
   {
     path: '/admin',
@@ -41,8 +41,8 @@ export default [
     name: '管理页',
     access: 'canAdmin',
     routes: [
-      {path: '/admin', redirect: '/admin/user'},
-      {icon: 'table', path: '/admin/user', component: './Admin/User', name: '用户管理'},
+      { path: '/admin', redirect: '/admin/user' },
+      { icon: 'table', path: '/admin/user', component: './Admin/User', name: '用户管理' },
       {
         icon: 'tools',
         path: '/admin/generator',
@@ -51,6 +51,6 @@ export default [
       },
     ],
   },
-  {path: '/', redirect: '/welcome'},
-  {path: '*', layout: false, component: './404'},
+  { path: '/', redirect: '/welcome' },
+  { path: '*', layout: false, component: './404' },
 ];
