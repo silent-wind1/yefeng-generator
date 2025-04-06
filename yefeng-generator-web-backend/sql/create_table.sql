@@ -43,13 +43,41 @@ create table if not exists generator
 ) comment '代码生成器' collate = utf8mb4_unicode_ci;
 
 -- 模拟 用户数据
-INSERT INTO my_yefeng.user(id,userAccount,userPassword,userName,userAvatar,userProfile,userRole) VALUES (1,'claw','df3f595406c59c46af221924d171f30f','管理员豹警官','https://i0.hdslb.com/bfs/archive/502c3df0d2d64d7f60819e8dda97e3c1e59efdf2.jpg','豹警官：勇敢维护动物城和平，夏奇羊粉丝，甜甜圈的忠实爱好者。','admin');
-INSERT INTO my_yefeng.user(id,userAccount,userPassword,userName,userAvatar,userProfile,userRole) VALUES (2,'claw2','df3f595406c59c46af221924d171f30f','档案室豹警官','https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png','豹警官：勇敢维护动物城和平，夏奇羊粉丝，甜甜圈的忠实爱好者。','user');
+INSERT INTO my_yefeng.user(id, userAccount, userPassword, userName, userAvatar, userProfile, userRole)
+VALUES (1, 'claw', 'df3f595406c59c46af221924d171f30f', '管理员豹警官',
+        'https://i0.hdslb.com/bfs/archive/502c3df0d2d64d7f60819e8dda97e3c1e59efdf2.jpg',
+        '豹警官：勇敢维护动物城和平，夏奇羊粉丝，甜甜圈的忠实爱好者。', 'admin');
+INSERT INTO my_yefeng.user(id, userAccount, userPassword, userName, userAvatar, userProfile, userRole)
+VALUES (2, 'claw2', 'df3f595406c59c46af221924d171f30f', '档案室豹警官',
+        'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
+        '豹警官：勇敢维护动物城和平，夏奇羊粉丝，甜甜圈的忠实爱好者。', 'user');
 
 -- 模拟 代码生成器数据
-INSERT INTO my_yefeng.generator(id,name,description,basePackage,version,author,tags,picture,fileConfig,modelConfig,distPath,status,userId) VALUES (1,'ACM 模板项目','ACM 模板项目生成器','com.dexcode','1.0','管理员豹警官','["Java"]','https://pic.yefeng.icu/1/_r0_c1851-bf115939332e.jpg','{}','{}',null,0,1);
-INSERT INTO my_yefeng.generator(id,name,description,basePackage,version,author,tags,picture,fileConfig,modelConfig,distPath,status,userId) VALUES (2,'Spring Boot 初始化模板','Spring Boot 初始化模板项目生成器','com.dexcode','1.0','管理员豹警官','["Java"]','https://pic.yefeng.icu/1/_r0_c0726-7e30f8db802a.jpg','{}','{}',null,0,1);
-INSERT INTO my_yefeng.generator(id,name,description,basePackage,version,author,tags,picture,fileConfig,modelConfig,distPath,status,userId) VALUES (3,'鱼皮外卖','鱼皮外卖项目生成器','com.dexcode','1.0','管理员豹警官','["Java", "前端"]','https://pic.yefeng.icu/1/_r1_c0cf7-f8e4bd865b4b.jpg','{}','{}',null,0,1);
-INSERT INTO my_yefeng.generator(id,name,description,basePackage,version,author,tags,picture,fileConfig,modelConfig,distPath,status,userId) VALUES (4,'鱼皮用户中心','鱼皮用户中心项目生成器','com.dexcode','1.0','管理员豹警官','["Java", "前端"]','https://pic.yefeng.icu/1/_r1_c1c15-79cdecf24aed.jpg','{}','{}',null,0,1);
-INSERT INTO my_yefeng.generator(id,name,description,basePackage,version,author,tags,picture,fileConfig,modelConfig,distPath,status,userId) VALUES (5,'鱼皮API开放平台','鱼皮API开放平台项目生成器','com.dexcode','1.0','管理员豹警官','["Java", "前端"]','https://pic.yefeng.icu/1/_r1_c0709-8e80689ac1da.jpg','{}','{}',null,0,1);
-INSERT INTO my_yefeng.generator (id, name, description, basePackage, version, author, tags, picture, fileConfig, modelConfig, distPath, status, userId, createTime, updateTime, isDelete) VALUES (18, 'acm-template-pro-generator', 'ACM 示例模板生成器', 'com.yupi', '1.0', 'yupi', '["Java"]', 'https://yuzi-1256524210.cos.ap-shanghai.myqcloud.com/generator_picture/1738875515482562562/U7uDBXC3-test (1).jpg', '{"files": [{"groupKey": "git","groupName": "开源","type": "group","condition": "needGit","files": [{"inputPath": ".gitignore","outputPath": ".gitignore","type": "file","generateType": "static"},{"inputPath": "README.md","outputPath": "README.md","type": "file","generateType": "static"}]},{"inputPath": "src/com/yupi/acm/MainTemplate.java.ftl","outputPath": "src/com/yupi/acm/MainTemplate.java","type": "file","generateType": "dynamic"}]}', '{"models":[{"fieldName":"needGit","type":"boolean","description":"是否生成 .gitignore 文件","defaultValue":true},{"fieldName":"loop","type":"boolean","description":"是否生成循环","defaultValue":false,"abbr":"l"},{"type":"MainTemplate","description":"用于生成核心模板文件","groupKey":"mainTemplate","groupName":"核心模板","models":[{"fieldName":"author","type":"String","description":"作者注释","defaultValue":"yupi","abbr":"a"},{"fieldName":"outputText","type":"String","description":"输出信息","defaultValue":"sum = ","abbr":"o"}],"condition":"loop"}]}', '/generator_dist/1738875515482562562/kLbG2yGh-acm-template-pro-generator.zip', 0, 1738875515482562562, '2024-01-06 23:00:17', '2024-01-08 18:50:12', 0);
+INSERT INTO my_yefeng.generator(id, name, description, basePackage, version, author, tags, picture, fileConfig,
+                                modelConfig, distPath, status, userId)
+VALUES (1, 'ACM 模板项目', 'ACM 模板项目生成器', 'com.dexcode', '1.0', '管理员豹警官', '["Java"]',
+        'https://pic.yefeng.icu/1/_r0_c1851-bf115939332e.jpg', '{}', '{}', null, 0, 1);
+INSERT INTO my_yefeng.generator(id, name, description, basePackage, version, author, tags, picture, fileConfig,
+                                modelConfig, distPath, status, userId)
+VALUES (2, 'Spring Boot 初始化模板', 'Spring Boot 初始化模板项目生成器', 'com.dexcode', '1.0', '管理员豹警官',
+        '["Java"]', 'https://pic.yefeng.icu/1/_r0_c0726-7e30f8db802a.jpg', '{}', '{}', null, 0, 1);
+INSERT INTO my_yefeng.generator(id, name, description, basePackage, version, author, tags, picture, fileConfig,
+                                modelConfig, distPath, status, userId)
+VALUES (3, '鱼皮外卖', '鱼皮外卖项目生成器', 'com.dexcode', '1.0', '管理员豹警官', '["Java", "前端"]',
+        'https://pic.yefeng.icu/1/_r1_c0cf7-f8e4bd865b4b.jpg', '{}', '{}', null, 0, 1);
+INSERT INTO my_yefeng.generator(id, name, description, basePackage, version, author, tags, picture, fileConfig,
+                                modelConfig, distPath, status, userId)
+VALUES (4, '鱼皮用户中心', '鱼皮用户中心项目生成器', 'com.dexcode', '1.0', '管理员豹警官', '["Java", "前端"]',
+        'https://pic.yefeng.icu/1/_r1_c1c15-79cdecf24aed.jpg', '{}', '{}', null, 0, 1);
+INSERT INTO my_yefeng.generator(id, name, description, basePackage, version, author, tags, picture, fileConfig,
+                                modelConfig, distPath, status, userId)
+VALUES (5, '鱼皮API开放平台', '鱼皮API开放平台项目生成器', 'com.dexcode', '1.0', '管理员豹警官', '["Java", "前端"]',
+        'https://pic.yefeng.icu/1/_r1_c0709-8e80689ac1da.jpg', '{}', '{}', null, 0, 1);
+INSERT INTO my_yefeng.generator (id, name, description, basePackage, version, author, tags, picture, fileConfig,
+                                 modelConfig, distPath, status, userId, createTime, updateTime, isDelete)
+VALUES (18, 'acm-template-pro-generator', 'ACM 示例模板生成器', 'com.yupi', '1.0', 'yupi', '["Java"]',
+        'https://yuzi-1256524210.cos.ap-shanghai.myqcloud.com/generator_picture/1738875515482562562/U7uDBXC3-test (1).jpg',
+        '{"files": [{"groupKey": "git","groupName": "开源","type": "group","condition": "needGit","files": [{"inputPath": ".gitignore","outputPath": ".gitignore","type": "file","generateType": "static"},{"inputPath": "README.md","outputPath": "README.md","type": "file","generateType": "static"}]},{"inputPath": "src/com/yupi/acm/MainTemplate.java.ftl","outputPath": "src/com/yupi/acm/MainTemplate.java","type": "file","generateType": "dynamic"}]}',
+        '{"models":[{"fieldName":"needGit","type":"boolean","description":"是否生成 .gitignore 文件","defaultValue":true},{"fieldName":"loop","type":"boolean","description":"是否生成循环","defaultValue":false,"abbr":"l"},{"type":"MainTemplate","description":"用于生成核心模板文件","groupKey":"mainTemplate","groupName":"核心模板","models":[{"fieldName":"author","type":"String","description":"作者注释","defaultValue":"yupi","abbr":"a"},{"fieldName":"outputText","type":"String","description":"输出信息","defaultValue":"sum = ","abbr":"o"}],"condition":"loop"}]}',
+        '/generator_dist/1738875515482562562/kLbG2yGh-acm-template-pro-generator.zip', 0, 1738875515482562562,
+        '2024-01-06 23:00:17', '2024-01-08 18:50:12', 0);

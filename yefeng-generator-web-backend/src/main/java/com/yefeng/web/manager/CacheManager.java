@@ -15,14 +15,13 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 public class CacheManager {
-    @Resource
-    private RedisTemplate<String, Object> redisTemplate;
-
     // 本地缓存,设置过期15分钟
     Cache<String, Object> localCache = Caffeine.newBuilder()
             .expireAfterWrite(15, TimeUnit.MINUTES)
             .maximumSize(10_000)
             .build();
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 写缓存

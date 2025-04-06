@@ -12,6 +12,7 @@ import com.yefeng.web.model.dto.generator.GeneratorQueryRequest;
 public class RedisKeyCommon {
     /**
      * 获取分页Key
+     *
      * @param generatorQueryRequest 生成器查询请求
      * @return key
      */

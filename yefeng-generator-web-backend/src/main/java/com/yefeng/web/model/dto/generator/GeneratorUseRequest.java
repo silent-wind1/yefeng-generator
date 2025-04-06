@@ -11,15 +11,13 @@ import java.util.Map;
 @Data
 public class GeneratorUseRequest implements Serializable {
 
-    /**
-     * id
-     */
-    private Long id;
-
+    private static final long serialVersionUID = 1L;
     /**
      * 数据模型
      */
     Map<String, Object> dataModel;
-
-    private static final long serialVersionUID = 1L;
+    /**
+     * id
+     */
+    private Long id;
 }

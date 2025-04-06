@@ -13,11 +13,10 @@ import java.time.LocalDateTime;
 
 /**
  * MyBatis Plus 配置
- *
  */
 @Configuration
 @MapperScan("com.yefeng.web.mapper")
-public class MyBatisPlusConfig  implements MetaObjectHandler {
+public class MyBatisPlusConfig implements MetaObjectHandler {
 
     /**
      * 拦截器配置
