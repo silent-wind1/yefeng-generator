@@ -1,7 +1,7 @@
 package com.yefeng.web;
 
-import com.yefeng.web.model.entity.Generator;
-import com.yefeng.web.service.GeneratorService;
+import com.yefeng.model.entity.Generator;
+import com.yefeng.service.GeneratorService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
