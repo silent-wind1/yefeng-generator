@@ -280,6 +280,8 @@ public class GeneratorController {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
         boolean result = generatorService.updateById(generator);
+        // 删除Redis和本地缓存
+        cacheManager.delete("*");
         return ResultUtils.success(result);
     }
 
