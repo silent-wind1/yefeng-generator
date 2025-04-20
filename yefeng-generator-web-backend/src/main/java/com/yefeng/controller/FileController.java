@@ -40,8 +40,8 @@ public class FileController {
     /**
      * 测试文件上传
      *
-     * @param multipartFile
-     * @return
+     * @param multipartFile 文件
+     * @return 结果
      */
     @PostMapping("/test/upload")
     public BaseResponse<String> testUploadFile(@RequestPart("file") MultipartFile multipartFile) {
