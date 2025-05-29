@@ -113,6 +113,8 @@ public class GeneratorController {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
         boolean b = generatorService.removeById(id);
+        // 删除Redis和本地缓存
+        cacheManager.delete("generator:page:*");
         return ResultUtils.success(b);
     }
 
@@ -141,6 +143,8 @@ public class GeneratorController {
         Generator oldGenerator = generatorService.getById(id);
         ThrowUtils.throwIf(oldGenerator == null, ErrorCode.NOT_FOUND_ERROR);
         boolean result = generatorService.updateById(generator);
+        // 删除Redis和本地缓存
+        cacheManager.delete("generator:page:*");
         return ResultUtils.success(result);
     }
 
@@ -281,7 +285,7 @@ public class GeneratorController {
         }
         boolean result = generatorService.updateById(generator);
         // 删除Redis和本地缓存
-        cacheManager.delete("*");
+        cacheManager.delete("generator:page:*");
         return ResultUtils.success(result);
     }
 
@@ -407,7 +411,7 @@ public class GeneratorController {
         // 执行脚本
         // 找到脚本文件所在路径
         // 要注意，如果不是 windows 系统，找 generator 文件而不是 bat
-        File scriptFile = FileUtil.loopFiles(unzipDistDir, 2, null).stream().filter(file -> file.isFile() && "generator.bat".equals(file.getName())).findFirst().orElseThrow(RuntimeException::new);
+        File scriptFile = FileUtil.loopFiles(unzipDistDir, 2, null).stream().filter(file -> file.isFile() && "generator".equals(file.getName())).findFirst().orElseThrow(RuntimeException::new);
 
         // 添加可执行权限
         try {
